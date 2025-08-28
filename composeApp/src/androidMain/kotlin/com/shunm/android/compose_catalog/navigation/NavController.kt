@@ -1,13 +1,11 @@
 package com.shunm.android.compose_catalog.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import kotlin.reflect.KClass
 
 @Composable
-internal fun rememberNavController(): NavController {
-    val backStack = remember { SnapshotStateList<NavRoute>() }
+internal fun rememberNavController(backStack: SnapshotStateList<NavRoute>): NavController {
     return NavController(backStack)
 }
 
