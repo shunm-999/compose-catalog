@@ -80,7 +80,6 @@ private fun NavHost(
     entryProvider: NavController.() -> (key: NavRoute) -> NavEntry<NavRoute>
 ) {
     val backStack = remember { mutableStateListOf(startDestination) }
-
     val navController = rememberNavController(backStack)
 
     NavDisplay(
