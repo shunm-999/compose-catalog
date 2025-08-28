@@ -23,3 +23,4 @@ dependencyResolutionManagement {
 }
 
 include(":composeApp")
+include(":domain:category")
