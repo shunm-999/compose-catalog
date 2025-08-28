@@ -2,6 +2,7 @@ rootProject.name = "Composecatalog"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
+    includeBuild("gradle-conventions")
     repositories {
         google {
             mavenContent {
