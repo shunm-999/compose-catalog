@@ -18,18 +18,8 @@ internal class NavController(
         val navOption = NavOptionBuilder().apply(builderAction).build()
 
         if (navOption.popUpTo != null) {
-            val currentTop = backStack.find { route -> route::class == navOption.popUpTo.route }
-            if (currentTop != null) {
-                val index = backStack.indexOf(currentTop)
-                val removeUpToIndex = if (navOption.popUpTo.inclusive) {
-                    index
-                } else {
-                    index + 1
-                }
-
-                if (removeUpToIndex < backStack.size) {
-                    backStack.removeRange(removeUpToIndex, backStack.size)
-                }
+            popUpTo(inclusive = navOption.popUpTo.inclusive) {
+                it::class == navOption.popUpTo.route
             }
         }
 
@@ -39,6 +29,26 @@ internal class NavController(
             // Do nothing
         } else {
             backStack.add(route)
+        }
+    }
+
+    fun popUpTo(route: NavRoute, inclusive: Boolean = false) {
+        popUpTo(inclusive = inclusive) { it::class == route::class }
+    }
+
+    private fun popUpTo(inclusive: Boolean, predicate: (NavRoute) -> Boolean) {
+        val index = backStack.indexOfFirst(predicate)
+        if (index == -1) {
+            return
+        }
+        val removeUpToIndex = if (inclusive) {
+            index
+        } else {
+            index + 1
+        }
+
+        if (removeUpToIndex < backStack.size) {
+            backStack.removeRange(index, backStack.size)
         }
     }
 
@@ -69,7 +79,14 @@ class NavOptionBuilder {
     }
 
     internal fun build(): NavOption {
-        return NavOption(popUpTo, if (singleTop == true) NavOption.SingleTop else null)
+        return NavOption(
+            popUpTo = popUpTo,
+            singleTop = if (singleTop == true) {
+                NavOption.SingleTop
+            } else {
+                null
+            }
+        )
     }
 }
 
