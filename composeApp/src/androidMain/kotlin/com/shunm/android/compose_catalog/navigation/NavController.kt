@@ -3,34 +3,43 @@ package com.shunm.android.compose_catalog.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import kotlin.reflect.KClass
+
+@Composable
+internal fun rememberNavController(): NavController {
+    val backStack = remember { SnapshotStateList<NavRoute>() }
+    return NavController(backStack)
+}
 
 internal class NavController(
     private val backStack: SnapshotStateList<NavRoute>
 ) {
-    fun navigate(route: NavRoute, option: NavOption = NavOption.Default) {
-        when (option) {
-            is NavOption.PopUpTo -> {
-                val index = backStack.indexOf(option.route)
-                if (index != -1) {
-                    backStack.removeRange(index + 1, backStack.size)
-                }
-                backStack.add(route)
-            }
+    fun navigate(route: NavRoute, builderAction: NavOptionBuilder.() -> Unit = {}) {
+        val navOption = NavOptionBuilder().apply(builderAction).build()
 
-            is NavOption.SingleTop -> {
-                if (backStack.contains(route)) {
-                    val index = backStack.indexOf(route)
-                    backStack.removeRange(index, backStack.size)
+        if (navOption.popUpTo != null) {
+            val currentTop = backStack.find { route -> route::class == navOption.popUpTo.route }
+            if (currentTop != null) {
+                val index = backStack.indexOf(currentTop)
+                val removeUpToIndex = if (navOption.popUpTo.inclusive) {
+                    index
                 } else {
-                    backStack.add(route)
+                    index + 1
                 }
-            }
 
-            is NavOption.Default -> {
-                backStack.add(route)
+                if (removeUpToIndex < backStack.size) {
+                    backStack.removeRange(removeUpToIndex, backStack.size)
+                }
             }
         }
 
+        if (navOption.singleTop != null && backStack.lastOrNull()
+                ?.let { route::class == it::class } == true
+        ) {
+            // Do nothing
+        } else {
+            backStack.add(route)
+        }
     }
 
     fun popBackStack(): NavRoute? {
@@ -38,14 +47,38 @@ internal class NavController(
     }
 }
 
-internal sealed interface NavOption {
-    object Default : NavOption
-    data class PopUpTo(val route: NavRoute) : NavOption
-    object SingleTop : NavOption
+internal data class NavOption(
+    val popUpTo: PopUpTo?,
+    val singleTop: SingleTop?
+) {
+
+    data class PopUpTo(
+        val route: KClass<out NavRoute>,
+        val inclusive: Boolean = false
+    )
+
+    object SingleTop
 }
 
-@Composable
-internal fun rememberNavController(): NavController {
-    val backStack = remember { SnapshotStateList<NavRoute>() }
-    return NavController(backStack)
+class NavOptionBuilder {
+    private var popUpTo: NavOption.PopUpTo? = null
+    var singleTop: Boolean? = null
+
+    fun popUpTo(route: KClass<out NavRoute>, inclusive: Boolean = false) {
+        popUpTo = NavOption.PopUpTo(route, inclusive)
+    }
+
+    internal fun build(): NavOption {
+        return NavOption(popUpTo, if (singleTop == true) NavOption.SingleTop else null)
+    }
 }
+
+class PopUpToBuilder {
+    var inclusive: Boolean = false
+}
+
+inline fun <reified T : NavRoute> NavOptionBuilder.popUpTo(builderAction: PopUpToBuilder.() -> Unit = {}) {
+    val popUpToBuilder = PopUpToBuilder().apply(builderAction)
+    popUpTo(route = T::class, inclusive = popUpToBuilder.inclusive)
+}
+
