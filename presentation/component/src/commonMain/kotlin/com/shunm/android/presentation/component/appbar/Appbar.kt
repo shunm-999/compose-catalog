@@ -60,9 +60,8 @@ fun ClMediumFlexibleAppbar(
     subtitle: @Composable (() -> Unit)? = null,
 ) {
     MediumFlexibleTopAppBar(
-        title = {
-            Text("Small Appbar")
-        },
+        title = headline,
+        subtitle = subtitle,
         navigationIcon = {
             if (leadingButton != null) {
                 AppbarLeadingButtonScope().leadingButton()
@@ -84,9 +83,8 @@ fun ClLargeFlexibleAppbar(
     subtitle: @Composable (() -> Unit)? = null,
 ) {
     LargeFlexibleTopAppBar(
-        title = {
-            Text("Small Appbar")
-        },
+        title = headline,
+        subtitle = subtitle,
         navigationIcon = {
             if (leadingButton != null) {
                 AppbarLeadingButtonScope().leadingButton()

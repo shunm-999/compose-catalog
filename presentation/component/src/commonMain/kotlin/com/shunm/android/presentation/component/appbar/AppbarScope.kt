@@ -7,5 +7,6 @@ sealed interface AppbarScope
 class AppbarLeadingButtonScope : AppbarScope
 
 class AppbarTrailingElementsScope(
-    rowScope: RowScope
-) : AppbarScope, RowScope by rowScope
+    rowScope: RowScope,
+) : AppbarScope,
+    RowScope by rowScope
