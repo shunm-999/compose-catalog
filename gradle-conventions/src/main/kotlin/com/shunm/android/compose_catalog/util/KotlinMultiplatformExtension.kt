@@ -18,6 +18,12 @@ internal fun KotlinMultiplatformExtension.androidLibrary(
     extensions.getByType<KotlinMultiplatformAndroidLibraryExtension>().apply(block)
 }
 
+internal fun DependencyHandlerScope.commonMainTestImplementation(
+    dependencyNotation: Any
+) {
+    add("commonTestImplementation", dependencyNotation)
+}
+
 internal fun DependencyHandlerScope.commonMainImplementation(
     dependencyNotation: Any
 ) {

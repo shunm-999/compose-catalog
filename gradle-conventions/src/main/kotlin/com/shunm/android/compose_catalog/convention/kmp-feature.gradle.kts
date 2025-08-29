@@ -1,8 +1,8 @@
 package com.shunm.android.compose_catalog.convention
 
+import com.android.build.gradle.BaseExtension
 import com.shunm.android.compose_catalog.util.library
 import com.shunm.android.compose_catalog.util.libs
-import gradle.kotlin.dsl.accessors._937c9308645c5e8bdf2065b840746083.implementation
 import org.jetbrains.compose.ExperimentalComposeLibrary
 
 plugins {
@@ -56,4 +56,8 @@ kotlin {
             "-opt-in=androidx.compose.material3.ExperimentalMaterial3ExpressiveApi",
         )
     }
+}
+
+configure<BaseExtension> {
+    testOptions.unitTests.isIncludeAndroidResources = true
 }
