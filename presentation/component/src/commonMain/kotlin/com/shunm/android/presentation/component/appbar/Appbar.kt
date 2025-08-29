@@ -62,6 +62,16 @@ fun ClMediumFlexibleAppbar(
     MediumFlexibleTopAppBar(
         title = {
             Text("Small Appbar")
+        },
+        navigationIcon = {
+            if (leadingButton != null) {
+                AppbarLeadingButtonScope().leadingButton()
+            }
+        },
+        actions = {
+            if (trailingElements != null) {
+                AppbarTrailingElementsScope(this).trailingElements()
+            }
         }
     )
 }
@@ -76,6 +86,16 @@ fun ClLargeFlexibleAppbar(
     LargeFlexibleTopAppBar(
         title = {
             Text("Small Appbar")
+        },
+        navigationIcon = {
+            if (leadingButton != null) {
+                AppbarLeadingButtonScope().leadingButton()
+            }
+        },
+        actions = {
+            if (trailingElements != null) {
+                AppbarTrailingElementsScope(this).trailingElements()
+            }
         }
     )
 }
@@ -89,6 +109,9 @@ private fun ClSmallAppbarPreview() {
         },
         subtitle = {
             Text("Subtitle")
+        },
+        leadingButton = {
+            PopBackIcon {  }
         }
     )
 }
@@ -100,6 +123,12 @@ private fun ClMediumFlexibleAppbarPreview() {
         headline = {
             Text("Small Appbar")
         },
+        subtitle = {
+            Text("Subtitle")
+        },
+        leadingButton = {
+            PopBackIcon {  }
+        }
     )
 }
 
@@ -110,5 +139,11 @@ private fun ClLargeFlexibleAppbarPreview() {
         headline = {
             Text("Small Appbar")
         },
+        subtitle = {
+            Text("Subtitle")
+        },
+        leadingButton = {
+            PopBackIcon {  }
+        }
     )
 }
