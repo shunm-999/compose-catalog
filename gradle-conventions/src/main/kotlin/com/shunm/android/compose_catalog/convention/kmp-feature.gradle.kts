@@ -24,7 +24,7 @@ kotlin {
         commonTest.dependencies {
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.uiTest)
-            implementation(libs.library("kotlinTest"))
+            implementation(libs.library("kotlin-test"))
         }
 
     }
