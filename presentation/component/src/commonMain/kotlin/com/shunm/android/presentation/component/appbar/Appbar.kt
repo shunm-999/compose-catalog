@@ -8,12 +8,14 @@ import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import com.shunm.android.presentation.component.di.Cataloglable
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ClSearchAppbar() {
 }
 
+@Cataloglable
 @Composable
 fun ClSmallAppbar(
     leadingButton: @Composable (AppbarLeadingButtonScope.() -> Unit)? = null,
@@ -51,6 +53,7 @@ fun ClSmallAppbar(
     )
 }
 
+@Cataloglable
 @Composable
 fun ClMediumFlexibleAppbar(
     leadingButton: @Composable (AppbarLeadingButtonScope.() -> Unit)? = null,
@@ -74,6 +77,7 @@ fun ClMediumFlexibleAppbar(
     )
 }
 
+@Cataloglable
 @Composable
 fun ClLargeFlexibleAppbar(
     leadingButton: @Composable (AppbarLeadingButtonScope.() -> Unit)? = null,
