@@ -12,7 +12,6 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ClSearchAppbar() {
-
 }
 
 @Composable
@@ -48,7 +47,7 @@ fun ClSmallAppbar(
             if (trailingElements != null) {
                 AppbarTrailingElementsScope(this).trailingElements()
             }
-        }
+        },
     )
 }
 
@@ -71,7 +70,7 @@ fun ClMediumFlexibleAppbar(
             if (trailingElements != null) {
                 AppbarTrailingElementsScope(this).trailingElements()
             }
-        }
+        },
     )
 }
 
@@ -94,7 +93,7 @@ fun ClLargeFlexibleAppbar(
             if (trailingElements != null) {
                 AppbarTrailingElementsScope(this).trailingElements()
             }
-        }
+        },
     )
 }
 
@@ -109,8 +108,8 @@ private fun ClSmallAppbarPreview() {
             Text("Subtitle")
         },
         leadingButton = {
-            PopBackIcon {  }
-        }
+            PopBackIcon { }
+        },
     )
 }
 
@@ -125,8 +124,8 @@ private fun ClMediumFlexibleAppbarPreview() {
             Text("Subtitle")
         },
         leadingButton = {
-            PopBackIcon {  }
-        }
+            PopBackIcon { }
+        },
     )
 }
 
@@ -141,7 +140,7 @@ private fun ClLargeFlexibleAppbarPreview() {
             Text("Subtitle")
         },
         leadingButton = {
-            PopBackIcon {  }
-        }
+            PopBackIcon { }
+        },
     )
 }

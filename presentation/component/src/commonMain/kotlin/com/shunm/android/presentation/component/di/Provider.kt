@@ -7,22 +7,20 @@ internal fun interface Provider<T> {
 internal class NullableProvider<T>(
     private val original: Provider<T>,
 ) : Provider<T?> {
-    override fun provide(): List<T?> =
-        mutableListOf<T?>().apply {
-            add(null)
-            addAll(original.provide())
-        }
+    override fun provide(): List<T?> = mutableListOf<T?>().apply {
+        add(null)
+        addAll(original.provide())
+    }
 }
 
 internal object DefaultProviders {
-    fun providers(): List<Provider<*>> =
-        listOf(
-            IntProvider(),
-            FloatProvider(),
-            DoubleProvider(),
-            BooleanProvider(),
-            StringProvider(),
-        )
+    fun providers(): List<Provider<*>> = listOf(
+        IntProvider(),
+        FloatProvider(),
+        DoubleProvider(),
+        BooleanProvider(),
+        StringProvider(),
+    )
 }
 
 internal class IntProvider : Provider<Int> {

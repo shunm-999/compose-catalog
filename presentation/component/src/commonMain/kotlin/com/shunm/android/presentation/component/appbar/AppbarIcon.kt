@@ -24,8 +24,8 @@ fun AppbarLeadingButtonScope.PopBackIcon(
         onClick = onClick,
         imageVector = Icons.AutoMirrored.Default.ArrowBack,
         contentDescription = stringResource(
-            ComponentRes.string.arrow_back_button_content_description
-        )
+            ComponentRes.string.arrow_back_button_content_description,
+        ),
     )
 }
 
@@ -33,12 +33,12 @@ fun AppbarLeadingButtonScope.PopBackIcon(
 fun AppbarLeadingButtonScope.LeadingIcon(
     onClick: () -> Unit,
     imageVector: ImageVector,
-    contentDescription: String? = null
+    contentDescription: String? = null,
 ) {
     AppbarIcon(
         onClick = onClick,
         imageVector = imageVector,
-        contentDescription = contentDescription
+        contentDescription = contentDescription,
     )
 }
 
@@ -46,12 +46,12 @@ fun AppbarLeadingButtonScope.LeadingIcon(
 fun AppbarTrailingElementsScope.TrailingIcon(
     onClick: () -> Unit,
     imageVector: ImageVector,
-    contentDescription: String? = null
+    contentDescription: String? = null,
 ) {
     AppbarIcon(
         onClick = onClick,
         imageVector = imageVector,
-        contentDescription = contentDescription
+        contentDescription = contentDescription,
     )
 }
 
@@ -59,16 +59,16 @@ fun AppbarTrailingElementsScope.TrailingIcon(
 private fun AppbarIcon(
     onClick: () -> Unit,
     imageVector: ImageVector,
-    contentDescription: String? = null
+    contentDescription: String? = null,
 ) {
     IconButton(
         modifier = Modifier.size(48.dp),
-        onClick = onClick
+        onClick = onClick,
     ) {
         Icon(
             modifier = Modifier.size(24.dp),
             imageVector = imageVector,
-            contentDescription = contentDescription
+            contentDescription = contentDescription,
         )
     }
 }
