@@ -1,5 +1,9 @@
 package com.shunm.android.presentation.component.di
 
+import androidx.compose.runtime.Composable
+import com.shunm.android.presentation.component.appbar.AppbarLeadingButtonScope
+import com.shunm.android.presentation.component.appbar.PopBackIcon
+
 internal fun interface Provider<T> {
     fun provide(): List<T>
 }
@@ -43,4 +47,16 @@ internal class BooleanProvider : Provider<Boolean> {
 
 internal class StringProvider : Provider<String> {
     override fun provide(): List<String> = listOf("", "Sample", "Sample".repeat(10))
+}
+
+// Custom Providers
+
+internal class LeadingButtonProvider : Provider<@Composable (AppbarLeadingButtonScope.() -> Unit)> {
+    override fun provide(): List<@Composable (AppbarLeadingButtonScope.() -> Unit)> {
+        return listOf(
+            {
+                PopBackIcon {}
+            },
+        )
+    }
 }

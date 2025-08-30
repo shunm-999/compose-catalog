@@ -3,9 +3,11 @@ package com.shunm.android.presentation.component.appbar
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.FileUpload
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -15,19 +17,6 @@ import com.shunm.android.compose_catalog.component.ComponentRes
 import com.shunm.android.compose_catalog.component.arrow_back_button_content_description
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-
-@Composable
-fun AppbarLeadingButtonScope.PopBackIcon(
-    onClick: () -> Unit,
-) {
-    LeadingIcon(
-        onClick = onClick,
-        imageVector = Icons.AutoMirrored.Default.ArrowBack,
-        contentDescription = stringResource(
-            ComponentRes.string.arrow_back_button_content_description,
-        ),
-    )
-}
 
 @Composable
 fun AppbarLeadingButtonScope.LeadingIcon(
@@ -43,6 +32,19 @@ fun AppbarLeadingButtonScope.LeadingIcon(
 }
 
 @Composable
+fun AppbarLeadingButtonScope.PopBackIcon(
+    onClick: () -> Unit,
+) {
+    LeadingIcon(
+        onClick = onClick,
+        imageVector = Icons.AutoMirrored.Default.ArrowBack,
+        contentDescription = stringResource(
+            ComponentRes.string.arrow_back_button_content_description,
+        ),
+    )
+}
+
+@Composable
 fun AppbarTrailingElementsScope.TrailingIcon(
     onClick: () -> Unit,
     imageVector: ImageVector,
@@ -52,6 +54,39 @@ fun AppbarTrailingElementsScope.TrailingIcon(
         onClick = onClick,
         imageVector = imageVector,
         contentDescription = contentDescription,
+    )
+}
+
+@Composable
+fun AppbarTrailingElementsScope.SearchIcon(
+    onClick: () -> Unit,
+) {
+    TrailingIcon(
+        onClick = onClick,
+        imageVector = Icons.Default.Search,
+        contentDescription = null,
+    )
+}
+
+@Composable
+fun AppbarTrailingElementsScope.FileUploadIcon(
+    onClick: () -> Unit,
+) {
+    TrailingIcon(
+        onClick = onClick,
+        imageVector = Icons.Default.FileUpload,
+        contentDescription = null,
+    )
+}
+
+@Composable
+fun AppbarTrailingElementsScope.MoreVertIcon(
+    onClick: () -> Unit,
+) {
+    TrailingIcon(
+        onClick = onClick,
+        imageVector = Icons.Default.MoreVert,
+        contentDescription = null,
     )
 }
 

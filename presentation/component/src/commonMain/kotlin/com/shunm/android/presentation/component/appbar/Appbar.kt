@@ -114,6 +114,10 @@ private fun ClSmallAppbarPreview() {
         leadingButton = {
             PopBackIcon { }
         },
+        trailingElements = {
+            SearchIcon { }
+            MoreVertIcon { }
+        }
     )
 }
 
@@ -130,6 +134,10 @@ private fun ClMediumFlexibleAppbarPreview() {
         leadingButton = {
             PopBackIcon { }
         },
+        trailingElements = {
+            SearchIcon { }
+            MoreVertIcon { }
+        }
     )
 }
 
@@ -146,5 +154,9 @@ private fun ClLargeFlexibleAppbarPreview() {
         leadingButton = {
             PopBackIcon { }
         },
+        trailingElements = {
+            SearchIcon { }
+            MoreVertIcon { }
+        }
     )
 }
