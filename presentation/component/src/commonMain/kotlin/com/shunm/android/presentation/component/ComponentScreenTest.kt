@@ -13,6 +13,7 @@ import com.shunm.android.presentation.component.appbar.AppbarLeadingButtonProvid
 import com.shunm.android.presentation.component.appbar.AppbarSubtitleScopeProvider
 import com.shunm.android.presentation.component.appbar.AppbarTrailingElementsProvider
 import com.shunm.android.presentation.component.appbar.ClSmallAppbar
+import com.shunm.android.presentation.component.di.NullableProvider
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -23,18 +24,20 @@ fun AppbarCatalog() {
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        ClSmallAppbar(
-            leadingButton = AppbarLeadingButtonProvider().provide()[0],
-            trailingElements = AppbarTrailingElementsProvider().provide()[0],
-            headline = AppbarHeadlineScopeProvider().provide()[0],
-            subtitle = AppbarSubtitleScopeProvider().provide()[0]
-        )
-        ClSmallAppbar(
-            leadingButton = AppbarLeadingButtonProvider().provide()[0],
-            trailingElements = AppbarTrailingElementsProvider().provide()[0],
-            headline = AppbarHeadlineScopeProvider().provide()[0],
-            subtitle = AppbarSubtitleScopeProvider().provide()[0]
-        )
+        for (a in AppbarLeadingButtonProvider().provide()) {
+            for (b in AppbarTrailingElementsProvider().provide()) {
+                for (c in AppbarHeadlineScopeProvider().provide()) {
+                    for (d in NullableProvider(AppbarSubtitleScopeProvider()).provide()) {
+                        ClSmallAppbar(
+                            leadingButton = a,
+                            trailingElements = b,
+                            headline = c,
+                            subtitle = d
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 

@@ -48,6 +48,10 @@ internal class AppbarTrailingElementsProvider : Provider<@Composable (AppbarTrai
             {
                 MoreVertIcon { }
             },
+            {
+                SearchIcon { }
+                MoreVertIcon { }
+            }
         )
     }
 }
