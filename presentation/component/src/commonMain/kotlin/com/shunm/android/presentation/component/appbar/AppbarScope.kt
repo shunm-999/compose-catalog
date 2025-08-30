@@ -4,7 +4,11 @@ import androidx.compose.foundation.layout.RowScope
 
 sealed interface AppbarScope
 
-class AppbarLeadingButtonScope : AppbarScope
+object AppbarHeadlineScope : AppbarScope
+
+object AppbarSubtitleScope : AppbarScope
+
+object AppbarLeadingButtonScope : AppbarScope
 
 class AppbarTrailingElementsScope(
     rowScope: RowScope,

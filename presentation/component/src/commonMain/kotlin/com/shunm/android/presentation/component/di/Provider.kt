@@ -20,7 +20,6 @@ internal class NullableProvider<T>(
     }
 }
 
-
 // DefaultProviders
 internal object DefaultProviders {
     fun providers(): List<Provider<*>> = listOf(
@@ -50,28 +49,4 @@ internal class BooleanProvider : Provider<Boolean> {
 
 internal class StringProvider : Provider<String> {
     override fun provide(): List<String> = listOf("", "Sample", "Sample".repeat(10))
-}
-
-// Custom Providers
-internal class AppbarLeadingButtonProvider : Provider<@Composable (AppbarLeadingButtonScope.() -> Unit)> {
-    override fun provide(): List<@Composable (AppbarLeadingButtonScope.() -> Unit)> {
-        return listOf(
-            {
-                PopBackIcon {}
-            },
-        )
-    }
-}
-
-internal class AppbarTrailingElementsProvider : Provider<@Composable (AppbarTrailingElementsScope.() -> Unit)> {
-    override fun provide(): List<@Composable (AppbarTrailingElementsScope.() -> Unit)> {
-        return listOf(
-            {
-                SearchIcon { }
-            },
-            {
-                MoreVertIcon { }
-            }
-        )
-    }
 }

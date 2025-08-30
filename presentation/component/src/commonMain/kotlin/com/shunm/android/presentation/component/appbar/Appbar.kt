@@ -20,29 +20,29 @@ fun ClSearchAppbar() {
 fun ClSmallAppbar(
     leadingButton: @Composable (AppbarLeadingButtonScope.() -> Unit)? = null,
     trailingElements: @Composable (AppbarTrailingElementsScope.() -> Unit)? = null,
-    headline: @Composable () -> Unit,
-    subtitle: @Composable (() -> Unit)? = null,
+    headline: @Composable AppbarHeadlineScope.() -> Unit,
+    subtitle: @Composable (AppbarSubtitleScope.() -> Unit)? = null,
 ) {
     TopAppBar(
         title = {
             if (subtitle != null) {
                 Column {
                     ProvideTextStyle(MaterialTheme.typography.titleLarge) {
-                        headline()
+                        AppbarHeadlineScope.headline()
                     }
                     ProvideTextStyle(MaterialTheme.typography.bodySmall) {
-                        subtitle()
+                        AppbarSubtitleScope.subtitle()
                     }
                 }
             } else {
                 ProvideTextStyle(MaterialTheme.typography.titleLarge) {
-                    headline()
+                    AppbarHeadlineScope.headline()
                 }
             }
         },
         navigationIcon = {
             if (leadingButton != null) {
-                AppbarLeadingButtonScope().leadingButton()
+                AppbarLeadingButtonScope.leadingButton()
             }
         },
         actions = {
@@ -58,15 +58,21 @@ fun ClSmallAppbar(
 fun ClMediumFlexibleAppbar(
     leadingButton: @Composable (AppbarLeadingButtonScope.() -> Unit)? = null,
     trailingElements: @Composable (AppbarTrailingElementsScope.() -> Unit)? = null,
-    headline: @Composable () -> Unit,
-    subtitle: @Composable (() -> Unit)? = null,
+    headline: @Composable AppbarHeadlineScope.() -> Unit,
+    subtitle: @Composable (AppbarSubtitleScope.() -> Unit)? = null,
 ) {
     MediumFlexibleTopAppBar(
-        title = headline,
-        subtitle = subtitle,
+        title = {
+            AppbarHeadlineScope.headline()
+        },
+        subtitle = subtitle?.let {
+            {
+                AppbarSubtitleScope.subtitle()
+            }
+        },
         navigationIcon = {
             if (leadingButton != null) {
-                AppbarLeadingButtonScope().leadingButton()
+                AppbarLeadingButtonScope.leadingButton()
             }
         },
         actions = {
@@ -82,15 +88,21 @@ fun ClMediumFlexibleAppbar(
 fun ClLargeFlexibleAppbar(
     leadingButton: @Composable (AppbarLeadingButtonScope.() -> Unit)? = null,
     trailingElements: @Composable (AppbarTrailingElementsScope.() -> Unit)? = null,
-    headline: @Composable () -> Unit,
-    subtitle: @Composable (() -> Unit)? = null,
+    headline: @Composable AppbarHeadlineScope.() -> Unit,
+    subtitle: @Composable (AppbarSubtitleScope.() -> Unit)? = null,
 ) {
     LargeFlexibleTopAppBar(
-        title = headline,
-        subtitle = subtitle,
+        title = {
+            AppbarHeadlineScope.headline()
+        },
+        subtitle = subtitle?.let {
+            {
+                AppbarSubtitleScope.subtitle()
+            }
+        },
         navigationIcon = {
             if (leadingButton != null) {
-                AppbarLeadingButtonScope().leadingButton()
+                AppbarLeadingButtonScope.leadingButton()
             }
         },
         actions = {
@@ -117,7 +129,7 @@ private fun ClSmallAppbarPreview() {
         trailingElements = {
             SearchIcon { }
             MoreVertIcon { }
-        }
+        },
     )
 }
 
@@ -137,7 +149,7 @@ private fun ClMediumFlexibleAppbarPreview() {
         trailingElements = {
             SearchIcon { }
             MoreVertIcon { }
-        }
+        },
     )
 }
 
@@ -157,6 +169,6 @@ private fun ClLargeFlexibleAppbarPreview() {
         trailingElements = {
             SearchIcon { }
             MoreVertIcon { }
-        }
+        },
     )
 }
