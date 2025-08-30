@@ -2,7 +2,10 @@ package com.shunm.android.presentation.component.di
 
 import androidx.compose.runtime.Composable
 import com.shunm.android.presentation.component.appbar.AppbarLeadingButtonScope
+import com.shunm.android.presentation.component.appbar.AppbarTrailingElementsScope
+import com.shunm.android.presentation.component.appbar.MoreVertIcon
 import com.shunm.android.presentation.component.appbar.PopBackIcon
+import com.shunm.android.presentation.component.appbar.SearchIcon
 
 internal fun interface Provider<T> {
     fun provide(): List<T>
@@ -50,13 +53,25 @@ internal class StringProvider : Provider<String> {
 }
 
 // Custom Providers
-
-internal class LeadingButtonProvider : Provider<@Composable (AppbarLeadingButtonScope.() -> Unit)> {
+internal class AppbarLeadingButtonProvider : Provider<@Composable (AppbarLeadingButtonScope.() -> Unit)> {
     override fun provide(): List<@Composable (AppbarLeadingButtonScope.() -> Unit)> {
         return listOf(
             {
                 PopBackIcon {}
             },
+        )
+    }
+}
+
+internal class AppbarTrailingElementsProvider : Provider<@Composable (AppbarTrailingElementsScope.() -> Unit)> {
+    override fun provide(): List<@Composable (AppbarTrailingElementsScope.() -> Unit)> {
+        return listOf(
+            {
+                SearchIcon { }
+            },
+            {
+                MoreVertIcon { }
+            }
         )
     }
 }
