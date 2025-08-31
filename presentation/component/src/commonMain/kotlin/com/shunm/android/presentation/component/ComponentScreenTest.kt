@@ -22,7 +22,7 @@ fun AppbarCatalog() {
         modifier = Modifier
             .padding(vertical = 8.dp, horizontal = 16.dp)
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         for (a in AppbarLeadingButtonProvider().provide()) {
             for (b in AppbarTrailingElementsProvider().provide()) {
@@ -32,7 +32,7 @@ fun AppbarCatalog() {
                             leadingButton = a,
                             trailingElements = b,
                             headline = c,
-                            subtitle = d
+                            subtitle = d,
                         )
                     }
                 }
