@@ -7,8 +7,7 @@ import kotlin.collections.forEach
 internal class CatalogMap {
     private val internalMap = mutableMapOf<String, MutableList<KSFunctionDeclaration>>()
 
-    private fun String.capitalizeFirstChar(): String =
-        replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+    private fun String.capitalizeFirstChar(): String = replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
 
     fun add(function: KSFunctionDeclaration) {
         val folderName = function.packageName.getShortName().capitalizeFirstChar()
@@ -21,4 +20,3 @@ internal class CatalogMap {
 
     fun entries(): Map<String, List<KSFunctionDeclaration>> = internalMap
 }
-

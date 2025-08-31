@@ -16,68 +16,68 @@ internal class CatalogTypeListScreenGenerateProcessor(
             fileName = "CatalogTypeListScreen",
         ) {
             // add imports
-            appendLine("import androidx.compose.foundation.clickable")
-            appendLine("import androidx.compose.foundation.layout.Column")
-            appendLine("import androidx.compose.material3.ListItem")
-            appendLine("import androidx.compose.material3.Text")
-            appendLine("import androidx.compose.runtime.Composable")
-            appendLine("import androidx.compose.ui.Modifier")
-            appendLine("")
+            "import androidx.compose.foundation.clickable".l()
+            "import androidx.compose.foundation.layout.Column".l()
+            "import androidx.compose.material3.ListItem".l()
+            "import androidx.compose.material3.Text".l()
+            "import androidx.compose.runtime.Composable".l()
+            "import androidx.compose.ui.Modifier".l()
+            "".l()
 
             // CatalogType enum class
-            appendLine("enum class CatalogType {")
-            withIndent {
+            "enum class CatalogType {".l()
+            ind {
                 for (key in catalogMap.entries().keys) {
-                    appendLine("$key,")
+                    "$key,".l()
                 }
             }
-            appendLine("}")
-            appendLine("")
+            "}".l()
+            "".l()
 
             // add CatalogTypeScreen
-            appendLine("@Composable")
-            appendLine("fun CatalogTypeScreen(")
-            withIndent {
-                appendLine("onClick: (CatalogType) -> Unit,")
+            "@Composable".l()
+            "fun CatalogTypeScreen(".l()
+            ind {
+                "onClick: (CatalogType) -> Unit,".l()
             }
-            appendLine(") {")
-            withIndent {
-                appendLine("Column {")
-                withIndent {
-                    appendLine("for (catalogType in CatalogType.entries) {")
-                    withIndent {
-                        appendLine("CatalogTypeItem(")
-                        withIndent {
-                            appendLine("catalogType = catalogType,")
-                            appendLine("onClick = { onClick(catalogType) }")
+            ") {".l()
+            ind {
+                "Column {".l()
+                ind {
+                    "for (catalogType in CatalogType.entries) {".l()
+                    ind {
+                        "CatalogTypeItem(".l()
+                        ind {
+                            "catalogType = catalogType,".l()
+                            "onClick = { onClick(catalogType) }".l()
                         }
-                        appendLine(")")
+                        ")".l()
                     }
-                    appendLine("}")
+                    "}".l()
                 }
-                appendLine("}")
+                "}".l()
             }
-            appendLine("}")
-            appendLine("")
+            "}".l()
+            "".l()
 
             // add CatalogTypeItem
-            appendLine("@Composable")
-            appendLine("fun CatalogTypeItem(")
-            withIndent {
-                appendLine("catalogType: CatalogType,")
-                appendLine("onClick: () -> Unit,")
+            "@Composable".l()
+            "fun CatalogTypeItem(".l()
+            ind {
+                "catalogType: CatalogType,".l()
+                "onClick: () -> Unit,".l()
             }
-            appendLine(") {")
-            withIndent {
-                appendLine("ListItem(")
-                withIndent {
-                    appendLine("headlineContent = { Text(text = catalogType.name) },")
-                    appendLine("modifier = Modifier.clickable { onClick() }")
+            ") {".l()
+            ind {
+                "ListItem(".l()
+                ind {
+                    "headlineContent = { Text(text = catalogType.name) },".l()
+                    "modifier = Modifier.clickable { onClick() }".l()
                 }
-                appendLine(")")
+                ")".l()
             }
-            appendLine("}")
-            appendLine("")
+            "}".l()
+            "".l()
         }
     }
 }

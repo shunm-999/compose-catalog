@@ -5,14 +5,15 @@ import com.google.devtools.ksp.processing.Dependencies
 
 class CodeBuilder(
     private val level: Int = 0,
-    private val stringBuilder: StringBuilder
+    private val stringBuilder: StringBuilder,
 ) {
-    fun appendLine(line: String) {
+
+    fun String.l() {
         stringBuilder.append(" ".repeat(level))
-        stringBuilder.appendLine(line)
+        stringBuilder.appendLine(this)
     }
 
-    fun withIndent(block: CodeBuilder.() -> Unit) {
+    fun ind(block: CodeBuilder.() -> Unit) {
         CodeBuilder(level + 4, stringBuilder).apply(block)
     }
 
@@ -28,7 +29,7 @@ fun generateFile(
 ) {
     val code = CodeBuilder(
         level = 0,
-        stringBuilder = StringBuilder()
+        stringBuilder = StringBuilder(),
     ).apply(codeBuilder).build()
 
     val file = codeGenerator.createNewFile(

@@ -39,4 +39,3 @@ internal class ComposableScreenGenerateProcessor(
         private const val PROVIDES_ANNOTATION_FQ_NAME = "com.shunm.android.presentation.component.di.CatalogProvider"
     }
 }
-
