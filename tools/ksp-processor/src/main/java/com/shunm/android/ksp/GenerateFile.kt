@@ -8,13 +8,16 @@ class CodeBuilder(
     private val stringBuilder: StringBuilder,
 ) {
 
-    fun String.l() {
+    fun String.l(block: CodeBuilder.() -> Unit = {}) {
         stringBuilder.append(" ".repeat(level))
         stringBuilder.appendLine(this)
+
+        CodeBuilder(level + 4, stringBuilder).apply(block)
     }
 
-    fun ind(block: CodeBuilder.() -> Unit) {
-        CodeBuilder(level + 4, stringBuilder).apply(block)
+    fun section(block: CodeBuilder.() -> Unit = {}) {
+        this.block()
+        stringBuilder.appendLine("")
     }
 
     fun build(): String = stringBuilder.toString()
