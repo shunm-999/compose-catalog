@@ -23,6 +23,7 @@ internal class CatalogTypeListScreenGenerateProcessor(
                 "import androidx.compose.material3.Text".l()
                 "import androidx.compose.runtime.Composable".l()
                 "import androidx.compose.ui.Modifier".l()
+                "import org.jetbrains.compose.ui.tooling.preview.Preview".l()
             }
 
             // CatalogType enum class
@@ -70,6 +71,16 @@ internal class CatalogTypeListScreenGenerateProcessor(
                         "modifier = Modifier.clickable { onClick() }".l()
                     }
                     ")".l()
+                }
+                "}".l()
+            }
+
+            // add Preview
+            section {
+                "@Preview".l()
+                "@Composable".l()
+                "fun CatalogTypeScreenPreview() {".l {
+                    "CatalogTypeScreen(onClick = {})".l()
                 }
                 "}".l()
             }
