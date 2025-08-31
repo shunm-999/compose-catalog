@@ -22,7 +22,7 @@ internal class CatalogTypeListScreenGenerateProcessor(
             appendLine("import androidx.compose.material3.Text")
             appendLine("import androidx.compose.runtime.Composable")
             appendLine("import androidx.compose.ui.Modifier")
-            appendLine("import org.jetbrains.compose.ui.tooling.preview.Preview")
+            appendLine("")
 
             // CatalogType enum class
             appendLine("enum class CatalogType {")
@@ -32,6 +32,7 @@ internal class CatalogTypeListScreenGenerateProcessor(
                 }
             }
             appendLine("}")
+            appendLine("")
 
             // add CatalogTypeScreen
             appendLine("@Composable")
@@ -46,8 +47,10 @@ internal class CatalogTypeListScreenGenerateProcessor(
                     appendLine("for (catalogType in CatalogType.entries) {")
                     withIndent {
                         appendLine("CatalogTypeItem(")
-                        appendLine("catalogType = catalogType,")
-                        appendLine("onClick = { onClick(catalogType) }")
+                        withIndent {
+                            appendLine("catalogType = catalogType,")
+                            appendLine("onClick = { onClick(catalogType) }")
+                        }
                         appendLine(")")
                     }
                     appendLine("}")
@@ -55,6 +58,26 @@ internal class CatalogTypeListScreenGenerateProcessor(
                 appendLine("}")
             }
             appendLine("}")
+            appendLine("")
+
+            // add CatalogTypeItem
+            appendLine("@Composable")
+            appendLine("fun CatalogTypeItem(")
+            withIndent {
+                appendLine("catalogType: CatalogType,")
+                appendLine("onClick: () -> Unit,")
+            }
+            appendLine(") {")
+            withIndent {
+                appendLine("ListItem(")
+                withIndent {
+                    appendLine("headlineContent = { Text(text = catalogType.name) },")
+                    appendLine("modifier = Modifier.clickable { onClick() }")
+                }
+                appendLine(")")
+            }
+            appendLine("}")
+            appendLine("")
         }
     }
 }
