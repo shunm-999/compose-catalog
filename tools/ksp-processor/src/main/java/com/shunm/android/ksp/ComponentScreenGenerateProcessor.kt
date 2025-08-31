@@ -1,11 +1,13 @@
 package com.shunm.android.ksp
 
 import com.google.devtools.ksp.processing.CodeGenerator
+import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
+import java.util.Locale
 
 class ComponentScreenGenerateProcessor(
     private val codeGenerator: CodeGenerator,
@@ -19,11 +21,31 @@ class ComponentScreenGenerateProcessor(
         }
         invoked = true
 
-        val catalogMap = CatalogMap()
 
         val catalogables = resolver.getSymbolsWithAnnotation(CATALOGALBE_ANNOTATION_FQ_NAME)
             .filterIsInstance<KSFunctionDeclaration>()
-        catalogMap.addAll(catalogables.toList())
+
+        println("⭐️ Found catalogables: ${catalogables.count()}")
+
+        val catalogMap = CatalogMap().apply {
+            addAll(catalogables.toList())
+        }
+
+        generateFile(
+            codeGenerator = codeGenerator,
+            dependencies = Dependencies(false),
+            packageName = "com.shunm.android.presentation.component",
+            fileName = "ComponentCatalogScreen",
+        ) {
+            append("enum class CatalogType {")
+            withIndent {
+                for (key in catalogMap.entries().keys) {
+                    append("$key,")
+                }
+            }
+            append("}")
+        }
+
         return emptyList()
     }
 
@@ -36,8 +58,11 @@ class ComponentScreenGenerateProcessor(
 private class CatalogMap {
     private val internalMap = mutableMapOf<String, MutableList<KSFunctionDeclaration>>()
 
+    private fun String.capitalizeFirstChar(): String =
+        replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+
     fun add(function: KSFunctionDeclaration) {
-        val folderName = function.packageName.toString().split(".").last()
+        val folderName = function.packageName.getShortName().capitalizeFirstChar()
         internalMap.getOrPut(folderName) { mutableListOf() }.add(function)
     }
 
@@ -45,5 +70,5 @@ private class CatalogMap {
         functions.forEach { add(it) }
     }
 
-    fun values(): Map<String, List<KSFunctionDeclaration>> = internalMap
+    fun entries(): Map<String, List<KSFunctionDeclaration>> = internalMap
 }

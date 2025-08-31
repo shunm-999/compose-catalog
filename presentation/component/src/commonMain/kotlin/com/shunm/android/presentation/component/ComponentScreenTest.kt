@@ -16,6 +16,30 @@ import com.shunm.android.presentation.component.appbar.ClSmallAppbar
 import com.shunm.android.presentation.component.di.NullableProvider
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+enum class CatalogType {
+    Appbar,
+    Button,
+    Card,
+    Chip,
+    Dialog,
+    Divider,
+    Icon,
+    Image,
+    Input,
+    List,
+    Menu,
+    NavigationRail,
+    ProgressIndicator,
+    RadioButton,
+    Scaffold,
+    Slider,
+    Snackbar,
+    Switch,
+    Tab,
+    Text,
+    TopAppBar,
+}
+
 @Composable
 fun AppbarCatalog() {
     Column(
