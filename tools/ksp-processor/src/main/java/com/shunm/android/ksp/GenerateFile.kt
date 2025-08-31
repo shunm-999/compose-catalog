@@ -7,7 +7,7 @@ class CodeBuilder(
     private val level: Int = 0,
     private val stringBuilder: StringBuilder
 ) {
-    fun append(line: String) {
+    fun appendLine(line: String) {
         stringBuilder.append(" ".repeat(level))
         stringBuilder.appendLine(line)
     }
