@@ -1,9 +1,15 @@
 package com.shunm.android.compose_catalog.convention
 
 import com.android.build.gradle.BaseExtension
+import com.google.devtools.ksp.gradle.KspAATask
 import com.shunm.android.compose_catalog.util.library
 import com.shunm.android.compose_catalog.util.libs
+import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.withType
 import org.jetbrains.compose.ExperimentalComposeLibrary
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinNativeCompile
 
 plugins {
     id("com.shunm.android.compose_catalog.primitive.kmp")
@@ -58,6 +64,39 @@ kotlin {
     }
 }
 
+dependencies {
+    add("kspCommonMainMetadata", project(":tools:ksp-processor"))
+    add("debugImplementation", compose.uiTooling)
+}
+
 configure<BaseExtension> {
     testOptions.unitTests.isIncludeAndroidResources = true
+}
+
+configure<KotlinMultiplatformExtension> {
+    sourceSets {
+        commonMain {
+            kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+        }
+    }
+}
+
+// Workaround for KSP declarations become Unresolved reference in IDE.
+// https://github.com/google/ksp/issues/963#issuecomment-2970973355
+tasks.withType<KspAATask>().all {
+    if (name != "kspCommonMainKotlinMetadata") {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }
+}
+
+tasks.withType<KotlinCompile>().all {
+    if (name != "kspCommonMainKotlinMetadata") {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }
+}
+
+tasks.withType<KotlinNativeCompile>().all {
+    if (name != "kspCommonMainKotlinMetadata") {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }
 }
