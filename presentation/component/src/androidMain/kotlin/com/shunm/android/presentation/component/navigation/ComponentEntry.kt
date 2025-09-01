@@ -24,7 +24,7 @@ fun <T : Any> EntryProviderBuilder<T>.componentEntry(navController: NavControlle
     entry<ComponentListRoute> { (catalogType) ->
         ComponentListScreen(
             catalogType = catalogType,
-            onBack = { navController.popBackStack() }
+            onBack = { navController.popBackStack() },
         )
     }
 }

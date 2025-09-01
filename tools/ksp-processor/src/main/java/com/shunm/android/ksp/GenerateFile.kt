@@ -38,6 +38,22 @@ class CodeBuilder(
         stringBuilder.appendLine("")
     }
 
+    fun indent(block: CodeBuilder.() -> Unit = {}) {
+        CodeBuilder(
+            dependencies = dependencies,
+            level = level + 4,
+            stringBuilder = stringBuilder,
+        ).apply(block)
+    }
+
+    fun indentOrNot(condition: Boolean, block: CodeBuilder.() -> Unit = {}) {
+        if (condition) {
+            indent(block)
+        } else {
+            this.block()
+        }
+    }
+
     fun build(): String = buildString {
         val dependencies = dependencies.distinct().sorted()
         for (dependency in dependencies) {

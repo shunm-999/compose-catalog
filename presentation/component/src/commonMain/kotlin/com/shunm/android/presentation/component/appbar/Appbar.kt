@@ -1,18 +1,39 @@
 package com.shunm.android.presentation.component.appbar
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.ProvideTextStyle
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.TopSearchBar
+import androidx.compose.material3.rememberSearchBarState
 import androidx.compose.runtime.Composable
 import com.shunm.android.presentation.component.di.Catalogable
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+@Catalogable
 @Composable
-fun ClSearchAppbar() {
+fun ClSearchAppbar(
+    onSearch: (String) -> Unit = {},
+) {
+    val searchBarState = rememberSearchBarState()
+    val textFieldState = rememberTextFieldState()
+    TopSearchBar(
+        state = searchBarState,
+        inputField = {
+            SearchBarDefaults.InputField(
+                textFieldState = textFieldState,
+                searchBarState = searchBarState,
+                onSearch = {
+                },
+            )
+        },
+    )
 }
 
 @Catalogable
@@ -22,6 +43,7 @@ fun ClSmallAppbar(
     trailingElements: @Composable (AppbarTrailingElementsScope.() -> Unit)? = null,
     headline: @Composable AppbarHeadlineScope.() -> Unit,
     subtitle: @Composable (AppbarSubtitleScope.() -> Unit)? = null,
+    scrollBehavior: TopAppBarScrollBehavior? = null,
 ) {
     TopAppBar(
         title = {
@@ -50,6 +72,7 @@ fun ClSmallAppbar(
                 AppbarTrailingElementsScope(this).trailingElements()
             }
         },
+        scrollBehavior = scrollBehavior,
     )
 }
 
@@ -60,6 +83,7 @@ fun ClMediumFlexibleAppbar(
     trailingElements: @Composable (AppbarTrailingElementsScope.() -> Unit)? = null,
     headline: @Composable AppbarHeadlineScope.() -> Unit,
     subtitle: @Composable (AppbarSubtitleScope.() -> Unit)? = null,
+    scrollBehavior: TopAppBarScrollBehavior? = null,
 ) {
     MediumFlexibleTopAppBar(
         title = {
@@ -80,6 +104,7 @@ fun ClMediumFlexibleAppbar(
                 AppbarTrailingElementsScope(this).trailingElements()
             }
         },
+        scrollBehavior = scrollBehavior,
     )
 }
 
@@ -90,6 +115,7 @@ fun ClLargeFlexibleAppbar(
     trailingElements: @Composable (AppbarTrailingElementsScope.() -> Unit)? = null,
     headline: @Composable AppbarHeadlineScope.() -> Unit,
     subtitle: @Composable (AppbarSubtitleScope.() -> Unit)? = null,
+    scrollBehavior: TopAppBarScrollBehavior? = null,
 ) {
     LargeFlexibleTopAppBar(
         title = {
@@ -110,6 +136,7 @@ fun ClLargeFlexibleAppbar(
                 AppbarTrailingElementsScope(this).trailingElements()
             }
         },
+        scrollBehavior = scrollBehavior,
     )
 }
 

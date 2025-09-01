@@ -5,11 +5,13 @@ internal fun interface Provider<T> {
 }
 
 internal class NullableProvider<T>(
-    private val original: Provider<T>,
+    private val original: Provider<T>? = null,
 ) : Provider<T?> {
     override fun provide(): List<T?> = mutableListOf<T?>().apply {
         add(null)
-        addAll(original.provide())
+        if (original != null) {
+            addAll(original.provide())
+        }
     }
 }
 

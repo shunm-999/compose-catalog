@@ -170,16 +170,29 @@ internal class ComponentListScreenGenerateProcessor(
         val functionParam = functionParams[count]
         val ch = ('a'.code + count).toChar()
 
-        val forStatement = if (functionParam.type.isDeepNullable()) {
-            "for ($ch in NullableProvider(${functionParam.provider.simpleName.asString()}()).provide()) {"
+        val provider = functionParam.provider
+        val forStatementOpt = if (functionParam.type.isDeepNullable()) {
+            if (provider != null) {
+                "for ($ch in NullableProvider(${functionParam.provider.simpleName.asString()}()).provide()) {"
+            } else {
+                null
+            }
         } else {
-            "for ($ch in ${functionParam.provider.simpleName.asString()}().provide()) {"
+            if (provider != null) {
+                "for ($ch in ${functionParam.provider.simpleName.asString()}().provide()) {"
+            } else {
+                null
+            }
         }
-        forStatement.l {
+
+        forStatementOpt?.l()
+        indentOrNot(forStatementOpt != null) {
             if (count >= functionParams.size - 1) {
                 "${catalog.simpleName.asString()}(".l {
-                    repeat(functionParams.size) {
-                        "${('a'.code + it).toChar()},".l()
+                    functionParams.forEachIndexed { index, param ->
+                        if (param.provider != null) {
+                            "${('a'.code + index).toChar()},".l()
+                        }
                     }
                 }
                 ")".l()
@@ -191,7 +204,9 @@ internal class ComponentListScreenGenerateProcessor(
                 )
             }
         }
-        "}".l()
+        if (forStatementOpt != null) {
+            "}".l()
+        }
     }
 
     private fun CodeBuilder.getFunctionParams(
@@ -205,15 +220,8 @@ internal class ComponentListScreenGenerateProcessor(
                 other = param.type.resolve(),
             )
         }
-        if (provider == null) {
-            logger.error(
-                message = "No provider found for parameter: ${param.name?.asString()} of type ${param.type.resolve().declaration.qualifiedName?.asString()} in ${catalog.simpleName.asString()}",
-                symbol = catalog,
-            )
-            throw IllegalStateException("No provider found for parameter: ${param.name?.asString()} of type ${param.type.resolve().declaration.qualifiedName?.asString()} in ${catalog.simpleName.asString()}")
-        }
         dependencies("com.shunm.android.presentation.component.di.NullableProvider")
-        dependencies(provider.qualifiedName?.asString())
+        dependencies(provider?.qualifiedName?.asString())
 
         FunctionParam(
             type = param.type.resolve(),
@@ -224,5 +232,5 @@ internal class ComponentListScreenGenerateProcessor(
 
 private data class FunctionParam(
     val type: KSType,
-    val provider: KSClassDeclaration,
+    val provider: KSClassDeclaration?,
 )
