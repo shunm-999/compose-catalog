@@ -6,6 +6,7 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
+import com.google.devtools.ksp.symbol.KSType
 
 internal class ComponentListScreenGenerateProcessor(
     private val codeGenerator: CodeGenerator,
@@ -69,7 +70,6 @@ internal class ComponentListScreenGenerateProcessor(
                             providers = providers,
                         )
                     }
-
                 }
                 "}".l()
             }
@@ -81,37 +81,57 @@ internal class ComponentListScreenGenerateProcessor(
         catalog: KSFunctionDeclaration,
         providers: List<KSClassDeclaration>,
     ) {
-        val qualifiedName = catalog.qualifiedName?.getQualifier()
+        val qualifiedName = catalog.qualifiedName?.asString()
         if (qualifiedName != null) {
             dependencies(qualifiedName)
         }
 
-        val params = catalog.parameters
-        "${catalog.simpleName}(".l {
-            for (param in params) {
-                val provider = providers.find {
-                    val genericType = it.genericTypeArgOrNull(resolver, PROVIDER_FQ_NAME) ?: return@find false
-                    genericType.equalsIgnoringNullabilityDeep(
-                        resolver = resolver,
-                        other = param.type.resolve()
-                    )
-                }
-                if (provider == null) {
-                    logger.error(
-                        message = "No provider found for parameter: ${param.name?.asString()} of type ${param.type.resolve().declaration.qualifiedName?.asString()} in ${catalog.simpleName.asString()}",
-                        symbol = catalog,
-                    )
-                    throw IllegalStateException("No provider found for parameter: ${param.name?.asString()} of type ${param.type.resolve().declaration.qualifiedName?.asString()} in ${catalog.simpleName.asString()}")
-                }
-
-                if (param.type.resolve().isDeepNullable()) {
+        val functionParams = getFunctionParams(
+            catalog = catalog,
+            providers = providers,
+        )
+        "${catalog.simpleName.asString()}(".l {
+            for (functionParam in functionParams) {
+                if (functionParam.type.isDeepNullable()) {
                     // TODO for文の導入
-                    "NullableProvider(${provider.simpleName.asString()}()).provide()[0],"
+                    "NullableProvider(${functionParam.provider.simpleName.asString()}()).provide()[0],".l()
                 } else {
-                    "${provider.simpleName.asString()}.provide()[0],"
+                    "${functionParam.provider.simpleName.asString()}().provide()[0],".l()
                 }
             }
         }
         ")".l()
     }
+
+    private fun CodeBuilder.getFunctionParams(
+        catalog: KSFunctionDeclaration,
+        providers: List<KSClassDeclaration>
+    ): List<FunctionParam> = catalog.parameters.map { param ->
+        val provider = providers.find {
+            val genericType = it.genericTypeArgOrNull(resolver, PROVIDER_FQ_NAME) ?: return@find false
+            genericType.equalsIgnoringNullabilityDeep(
+                resolver = resolver,
+                other = param.type.resolve()
+            )
+        }
+        if (provider == null) {
+            logger.error(
+                message = "No provider found for parameter: ${param.name?.asString()} of type ${param.type.resolve().declaration.qualifiedName?.asString()} in ${catalog.simpleName.asString()}",
+                symbol = catalog,
+            )
+            throw IllegalStateException("No provider found for parameter: ${param.name?.asString()} of type ${param.type.resolve().declaration.qualifiedName?.asString()} in ${catalog.simpleName.asString()}")
+        }
+        dependencies("com.shunm.android.presentation.component.di.NullableProvider")
+        dependencies(provider.qualifiedName?.asString())
+
+        FunctionParam(
+            type = param.type.resolve(),
+            provider = provider,
+        )
+    }
 }
+
+private data class FunctionParam(
+    val type: KSType,
+    val provider: KSClassDeclaration
+)

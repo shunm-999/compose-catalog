@@ -9,13 +9,16 @@ class CodeBuilder(
     private val stringBuilder: StringBuilder,
 ) {
 
-    fun dependency(name: String) {
+    fun dependency(name: String?) {
+        if (name == null) {
+            return
+        }
         if (!dependencies.contains(name)) {
             dependencies += name
         }
     }
 
-    fun dependencies(vararg names: String) {
+    fun dependencies(vararg names: String?) {
         names.forEach { dependency(it) }
     }
 
