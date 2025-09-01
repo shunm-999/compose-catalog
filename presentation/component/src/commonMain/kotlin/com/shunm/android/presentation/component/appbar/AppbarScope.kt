@@ -8,7 +8,15 @@ object AppbarHeadlineScope : AppbarScope
 
 object AppbarSubtitleScope : AppbarScope
 
-object AppbarLeadingButtonScope : AppbarScope
+open class AppbarLeadingButtonScope : AppbarScope
+
+data class SearchAppbarLeadingButtonScope(
+    private val collapseInternal: () -> Unit,
+) : AppbarLeadingButtonScope() {
+    fun collapse() {
+        collapseInternal()
+    }
+}
 
 class AppbarTrailingElementsScope(
     rowScope: RowScope,

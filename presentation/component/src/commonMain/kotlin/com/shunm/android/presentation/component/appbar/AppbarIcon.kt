@@ -124,6 +124,6 @@ private fun AppbarIcon(
 @Composable
 private fun PreviewPopBackIcon() {
     Surface {
-        AppbarLeadingButtonScope.PopBackIcon(onClick = {})
+        AppbarLeadingButtonScope().PopBackIcon(onClick = {})
     }
 }

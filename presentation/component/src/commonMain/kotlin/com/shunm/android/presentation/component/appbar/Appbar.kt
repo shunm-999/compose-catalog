@@ -30,7 +30,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun ClSearchAppbar(
     onSearch: (String) -> Unit = {},
     placeholder: @Composable (() -> Unit)? = null,
-    leadingButton: @Composable (AppbarLeadingButtonScope.(isExpanded: Boolean) -> Unit)? = null,
+    leadingButton: @Composable (SearchAppbarLeadingButtonScope.(isExpanded: Boolean) -> Unit)? = null,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val searchBarState = rememberSearchBarState()
@@ -49,7 +49,11 @@ fun ClSearchAppbar(
                 } else {
                     {
                         leadingButton(
-                            AppbarLeadingButtonScope,
+                            SearchAppbarLeadingButtonScope {
+                                coroutineScope.launch {
+                                    searchBarState.animateToCollapsed()
+                                }
+                            },
                             searchBarState.currentValue == SearchBarValue.Expanded,
                         )
                     }
@@ -103,7 +107,7 @@ fun ClSmallAppbar(
         },
         navigationIcon = {
             if (leadingButton != null) {
-                AppbarLeadingButtonScope.leadingButton()
+                AppbarLeadingButtonScope().leadingButton()
             }
         },
         actions = {
@@ -135,7 +139,7 @@ fun ClMediumFlexibleAppbar(
         },
         navigationIcon = {
             if (leadingButton != null) {
-                AppbarLeadingButtonScope.leadingButton()
+                AppbarLeadingButtonScope().leadingButton()
             }
         },
         actions = {
@@ -167,7 +171,7 @@ fun ClLargeFlexibleAppbar(
         },
         navigationIcon = {
             if (leadingButton != null) {
-                AppbarLeadingButtonScope.leadingButton()
+                AppbarLeadingButtonScope().leadingButton()
             }
         },
         actions = {
@@ -186,7 +190,9 @@ private fun ClSearchAppbarPreview() {
         onSearch = {},
         leadingButton = { isExpanded ->
             if (isExpanded) {
-                PopBackIcon { }
+                PopBackIcon {
+                    collapse()
+                }
             } else {
                 MenuIcon { }
             }
