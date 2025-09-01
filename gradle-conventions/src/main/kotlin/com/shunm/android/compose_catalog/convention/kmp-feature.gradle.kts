@@ -65,7 +65,6 @@ kotlin {
 }
 
 dependencies {
-    add("kspCommonMainMetadata", project(":tools:ksp-processor"))
     add("debugImplementation", compose.uiTooling)
 }
 

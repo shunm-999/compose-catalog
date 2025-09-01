@@ -84,6 +84,9 @@ android {
 }
 
 dependencies {
+    implementation(projects.presentation.shared)
+    implementation(projects.presentation.component)
+
     debugImplementation(compose.uiTooling)
 }
 
