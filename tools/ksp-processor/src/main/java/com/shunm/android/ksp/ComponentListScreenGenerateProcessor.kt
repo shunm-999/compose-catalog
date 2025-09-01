@@ -34,7 +34,11 @@ internal class ComponentListScreenGenerateProcessor(
                 "androidx.compose.foundation.layout.padding",
                 "androidx.compose.foundation.rememberScrollState",
                 "androidx.compose.foundation.verticalScroll",
+                "androidx.compose.material.icons.Icons",
+                "androidx.compose.material.icons.automirrored.filled.ArrowBack",
                 "androidx.compose.material3.CenterAlignedTopAppBar",
+                "androidx.compose.material3.Icon",
+                "androidx.compose.material3.IconButton",
                 "androidx.compose.material3.Scaffold",
                 "androidx.compose.material3.Text",
                 "androidx.compose.runtime.Composable",
@@ -65,15 +69,29 @@ internal class ComponentListScreenGenerateProcessor(
     ) {
         section {
             "@Composable".l()
-            " fun ComponentListScreen(".l {
-                " catalogType: CatalogType,".l()
+            "fun ComponentListScreen(".l {
+                "catalogType: CatalogType,".l()
+                "onBack : () -> Unit = {},".l()
             }
             ") {".l {
                 "Scaffold(".l {
-                    " topBar = {".l {
+                    "topBar = {".l {
                         "CenterAlignedTopAppBar(".l {
-                            " title = {".l {
-                                " Text(text = \"ComponentList : \$catalogType\")".l()
+                            "title = {".l {
+                                "Text(text = \"ComponentList : \$catalogType\")".l()
+                            }
+                            "},".l()
+                            "navigationIcon = {".l {
+                                "IconButton(".l {
+                                    "onClick = {".l {
+                                        "onBack()".l()
+                                    }
+                                    "}".l()
+                                }
+                                ") {".l {
+                                    "Icon(Icons.AutoMirrored.Default.ArrowBack, null)".l()
+                                }
+                                "}".l()
                             }
                             "}".l()
                         }
