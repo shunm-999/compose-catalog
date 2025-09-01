@@ -2,7 +2,6 @@ package com.shunm.android.ksp
 
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import java.util.Locale
-import kotlin.collections.forEach
 
 internal class CatalogMap {
     private val internalMap = mutableMapOf<String, MutableList<KSFunctionDeclaration>>()

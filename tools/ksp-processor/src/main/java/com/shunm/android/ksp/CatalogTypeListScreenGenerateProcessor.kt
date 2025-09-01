@@ -16,23 +16,22 @@ internal class CatalogTypeListScreenGenerateProcessor(
             fileName = "CatalogTypeListScreen",
         ) {
             // add imports
-            section {
-                "import androidx.compose.foundation.clickable".l()
-                "import androidx.compose.foundation.layout.Column".l()
-                "import androidx.compose.foundation.layout.padding".l()
-                "import androidx.compose.material.icons.Icons".l()
-                "import androidx.compose.material.icons.automirrored.outlined.ArrowRight".l()
-                "import androidx.compose.material3.CenterAlignedTopAppBar".l()
-                "import androidx.compose.material3.Icon".l()
-                "import androidx.compose.material3.IconButton".l()
-                "import androidx.compose.material3.Scaffold".l()
-                "import androidx.compose.material3.ListItem".l()
-                "import androidx.compose.material3.Text".l()
-                "import androidx.compose.runtime.Composable".l()
-                "import androidx.compose.ui.Modifier".l()
-                "import org.jetbrains.compose.ui.tooling.preview.Preview".l()
-            }
-
+            dependencies(
+                "androidx.compose.foundation.clickable",
+                "androidx.compose.foundation.layout.Column",
+                "androidx.compose.foundation.layout.padding",
+                "androidx.compose.material.icons.Icons",
+                "androidx.compose.material.icons.automirrored.outlined.ArrowRight",
+                "androidx.compose.material3.CenterAlignedTopAppBar",
+                "androidx.compose.material3.Icon",
+                "androidx.compose.material3.IconButton",
+                "androidx.compose.material3.Scaffold",
+                "androidx.compose.material3.ListItem",
+                "androidx.compose.material3.Text",
+                "androidx.compose.runtime.Composable",
+                "androidx.compose.ui.Modifier",
+                "org.jetbrains.compose.ui.tooling.preview.Preview",
+            )
             // CatalogType enum class
             section {
                 "enum class CatalogType {".l {

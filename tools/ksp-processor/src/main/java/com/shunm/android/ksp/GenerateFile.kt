@@ -4,15 +4,30 @@ import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies
 
 class CodeBuilder(
+    private val dependencies: MutableList<String> = mutableListOf(),
     private val level: Int = 0,
     private val stringBuilder: StringBuilder,
 ) {
+
+    fun dependency(name: String) {
+        if (!dependencies.contains(name)) {
+            dependencies += name
+        }
+    }
+
+    fun dependencies(vararg names: String) {
+        names.forEach { dependency(it) }
+    }
 
     fun String.l(block: CodeBuilder.() -> Unit = {}) {
         stringBuilder.append(" ".repeat(level))
         stringBuilder.appendLine(this)
 
-        CodeBuilder(level + 4, stringBuilder).apply(block)
+        CodeBuilder(
+            dependencies = dependencies,
+            level = level + 4,
+            stringBuilder = stringBuilder,
+        ).apply(block)
     }
 
     fun section(block: CodeBuilder.() -> Unit = {}) {
@@ -20,7 +35,14 @@ class CodeBuilder(
         stringBuilder.appendLine("")
     }
 
-    fun build(): String = stringBuilder.toString()
+    fun build(): String = buildString {
+        val dependencies = dependencies.distinct().sorted()
+        for (dependency in dependencies) {
+            appendLine("import $dependency")
+        }
+        appendLine("")
+        append(stringBuilder.toString())
+    }
 }
 
 fun generateFile(

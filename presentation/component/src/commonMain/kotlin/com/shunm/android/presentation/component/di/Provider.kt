@@ -1,12 +1,5 @@
 package com.shunm.android.presentation.component.di
 
-import androidx.compose.runtime.Composable
-import com.shunm.android.presentation.component.appbar.AppbarLeadingButtonScope
-import com.shunm.android.presentation.component.appbar.AppbarTrailingElementsScope
-import com.shunm.android.presentation.component.appbar.MoreVertIcon
-import com.shunm.android.presentation.component.appbar.PopBackIcon
-import com.shunm.android.presentation.component.appbar.SearchIcon
-
 internal fun interface Provider<T> {
     fun provide(): List<T>
 }
@@ -20,33 +13,27 @@ internal class NullableProvider<T>(
     }
 }
 
-// DefaultProviders
-internal object DefaultProviders {
-    fun providers(): List<Provider<*>> = listOf(
-        IntProvider(),
-        FloatProvider(),
-        DoubleProvider(),
-        BooleanProvider(),
-        StringProvider(),
-    )
-}
-
+@CatalogProvider
 internal class IntProvider : Provider<Int> {
     override fun provide(): List<Int> = listOf(0, 1)
 }
 
+@CatalogProvider
 internal class FloatProvider : Provider<Float> {
     override fun provide(): List<Float> = listOf(0f, 1f)
 }
 
+@CatalogProvider
 internal class DoubleProvider : Provider<Double> {
     override fun provide(): List<Double> = listOf(0.0, 1.0)
 }
 
+@CatalogProvider
 internal class BooleanProvider : Provider<Boolean> {
     override fun provide(): List<Boolean> = listOf(true, false)
 }
 
+@CatalogProvider
 internal class StringProvider : Provider<String> {
     override fun provide(): List<String> = listOf("", "Sample", "Sample".repeat(10))
 }

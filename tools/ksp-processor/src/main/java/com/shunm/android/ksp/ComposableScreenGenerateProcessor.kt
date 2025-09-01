@@ -5,6 +5,7 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
+import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 
 internal class ComposableScreenGenerateProcessor(
@@ -26,9 +27,19 @@ internal class ComposableScreenGenerateProcessor(
             addAll(catalogables.toList())
         }
 
+        val providers = resolver.getSymbolsWithAnnotation(PROVIDERS_ANNOTATION_FQ_NAME)
+            .filterIsInstance<KSClassDeclaration>()
+            .toList()
+
         CatalogTypeListScreenGenerateProcessor(
             codeGenerator = codeGenerator,
             catalogMap = catalogMap,
+        ).generate()
+
+        ComponentListScreenGenerateProcessor(
+            codeGenerator = codeGenerator,
+            catalogMap = catalogMap,
+            providers = providers,
         ).generate()
 
         return emptyList()
@@ -36,6 +47,6 @@ internal class ComposableScreenGenerateProcessor(
 
     private companion object Companion {
         private const val CATALOGALBE_ANNOTATION_FQ_NAME = "com.shunm.android.presentation.component.di.Catalogable"
-        private const val PROVIDES_ANNOTATION_FQ_NAME = "com.shunm.android.presentation.component.di.CatalogProvider"
+        private const val PROVIDERS_ANNOTATION_FQ_NAME = "com.shunm.android.presentation.component.di.CatalogProvider"
     }
 }
