@@ -16,7 +16,7 @@ import com.shunm.android.presentation.component.appbar.ClSmallAppbar
 import com.shunm.android.presentation.component.di.NullableProvider
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-enum class CatalogType {
+private enum class CatalogType {
     Appbar,
     Button,
     Card,

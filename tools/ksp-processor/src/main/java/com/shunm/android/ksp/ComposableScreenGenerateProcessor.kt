@@ -38,6 +38,8 @@ internal class ComposableScreenGenerateProcessor(
 
         ComponentListScreenGenerateProcessor(
             codeGenerator = codeGenerator,
+            resolver = resolver,
+            logger = logger,
             catalogMap = catalogMap,
             providers = providers,
         ).generate()
