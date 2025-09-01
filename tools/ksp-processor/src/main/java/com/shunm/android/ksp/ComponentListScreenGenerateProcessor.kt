@@ -34,11 +34,19 @@ internal class ComponentListScreenGenerateProcessor(
                 "androidx.compose.foundation.layout.padding",
                 "androidx.compose.foundation.rememberScrollState",
                 "androidx.compose.foundation.verticalScroll",
+                "androidx.compose.material3.CenterAlignedTopAppBar",
+                "androidx.compose.material3.Scaffold",
+                "androidx.compose.material3.Text",
                 "androidx.compose.runtime.Composable",
                 "androidx.compose.ui.Modifier",
                 "androidx.compose.ui.unit.dp",
                 "com.shunm.android.presentation.component.di.NullableProvider",
                 "org.jetbrains.compose.ui.tooling.preview.Preview",
+            )
+
+            // add switch function
+            generateSwitchCatalog(
+                catalogMap = catalogMap,
             )
 
             // add Composable function
@@ -49,6 +57,41 @@ internal class ComponentListScreenGenerateProcessor(
                     providers = providers,
                 )
             }
+        }
+    }
+
+    private fun CodeBuilder.generateSwitchCatalog(
+        catalogMap: CatalogMap,
+    ) {
+        section {
+            "@Composable".l()
+            " fun ComponentListScreen(".l {
+                " catalogType: CatalogType,".l()
+            }
+            ") {".l {
+                "Scaffold(".l {
+                    " topBar = {".l {
+                        "CenterAlignedTopAppBar(".l {
+                            " title = {".l {
+                                " Text(text = \"ComponentList : \$catalogType\")".l()
+                            }
+                            "}".l()
+                        }
+                        ")".l()
+                    }
+                    "}".l()
+                }
+                ") { paddingValues ->".l {
+                    "when (catalogType) {".l {
+                        for (catalogType in catalogMap.entries().keys) {
+                            "CatalogType.$catalogType -> ${catalogType}Catalog()".l()
+                        }
+                    }
+                    "}".l()
+                }
+                "}".l()
+            }
+            "}".l()
         }
     }
 
