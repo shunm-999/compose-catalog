@@ -30,6 +30,7 @@ internal class ComponentListScreenGenerateProcessor(
             dependencies(
                 "androidx.compose.foundation.layout.Arrangement",
                 "androidx.compose.foundation.layout.Column",
+                "androidx.compose.foundation.layout.fillMaxWidth",
                 "androidx.compose.foundation.layout.padding",
                 "androidx.compose.foundation.rememberScrollState",
                 "androidx.compose.foundation.verticalScroll",
@@ -60,7 +61,7 @@ internal class ComponentListScreenGenerateProcessor(
             "@Composable".l()
             "fun ${key}Catalog() {".l {
                 "Column(".l {
-                    "modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp).verticalScroll(rememberScrollState()),".l()
+                    "modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp, horizontal = 16.dp).verticalScroll(rememberScrollState()),".l()
                     "verticalArrangement = Arrangement.spacedBy(8.dp),".l()
                 }
                 ") {".l {
@@ -90,28 +91,57 @@ internal class ComponentListScreenGenerateProcessor(
             catalog = catalog,
             providers = providers,
         )
-        "${catalog.simpleName.asString()}(".l {
-            for (functionParam in functionParams) {
-                if (functionParam.type.isDeepNullable()) {
-                    // TODO for文の導入
-                    "NullableProvider(${functionParam.provider.simpleName.asString()}()).provide()[0],".l()
-                } else {
-                    "${functionParam.provider.simpleName.asString()}().provide()[0],".l()
+        generateCallComposableImpl(
+            count = 0,
+            catalog = catalog,
+            functionParams = functionParams,
+        )
+    }
+
+    private fun CodeBuilder.generateCallComposableImpl(
+        count: Int = 0,
+        catalog: KSFunctionDeclaration,
+        functionParams: List<FunctionParam>,
+    ) {
+        if (functionParams.isEmpty()) {
+            "${catalog.simpleName.asString()}()".l()
+        }
+        val functionParam = functionParams[count]
+        val ch = ('a'.code + count).toChar()
+
+        val forStatement = if (functionParam.type.isDeepNullable()) {
+            "for ($ch in NullableProvider(${functionParam.provider.simpleName.asString()}()).provide()) {"
+        } else {
+            "for ($ch in ${functionParam.provider.simpleName.asString()}().provide()) {"
+        }
+        forStatement.l {
+            if (count >= functionParams.size - 1) {
+                "${catalog.simpleName.asString()}(".l {
+                    repeat(functionParams.size) {
+                        "${('a'.code + it).toChar()},".l()
+                    }
                 }
+                ")".l()
+            } else {
+                generateCallComposableImpl(
+                    count = count + 1,
+                    catalog = catalog,
+                    functionParams = functionParams,
+                )
             }
         }
-        ")".l()
+        "}".l()
     }
 
     private fun CodeBuilder.getFunctionParams(
         catalog: KSFunctionDeclaration,
-        providers: List<KSClassDeclaration>
+        providers: List<KSClassDeclaration>,
     ): List<FunctionParam> = catalog.parameters.map { param ->
         val provider = providers.find {
             val genericType = it.genericTypeArgOrNull(resolver, PROVIDER_FQ_NAME) ?: return@find false
             genericType.equalsIgnoringNullabilityDeep(
                 resolver = resolver,
-                other = param.type.resolve()
+                other = param.type.resolve(),
             )
         }
         if (provider == null) {
@@ -133,5 +163,5 @@ internal class ComponentListScreenGenerateProcessor(
 
 private data class FunctionParam(
     val type: KSType,
-    val provider: KSClassDeclaration
+    val provider: KSClassDeclaration,
 )

@@ -14,10 +14,10 @@ import com.google.devtools.ksp.symbol.KSTypeArgument
  */
 fun KSClassDeclaration.genericTypeArgOrNull(
     resolver: Resolver,
-    generics: String
+    generics: String,
 ): KSType? {
     val genericsDecl = resolver.getClassDeclarationByName(
-        resolver.getKSNameFromString(generics)
+        resolver.getKSNameFromString(generics),
     ) ?: return null
 
     // class の全 super type を走査
@@ -59,8 +59,6 @@ fun KSType.isDeepNullable(): Boolean {
     return false
 }
 
-fun KSType.equalsIgnoringNullabilityDeep(other: KSType, resolver: Resolver): Boolean =
-    this.deepNonNull(resolver) == other.deepNonNull(resolver)
+fun KSType.equalsIgnoringNullabilityDeep(other: KSType, resolver: Resolver): Boolean = this.deepNonNull(resolver) == other.deepNonNull(resolver)
 
-fun KSType.isAssignableFromIgnoringNullabilityDeep(other: KSType, resolver: Resolver): Boolean =
-    this.deepNonNull(resolver).isAssignableFrom(other.deepNonNull(resolver))
+fun KSType.isAssignableFromIgnoringNullabilityDeep(other: KSType, resolver: Resolver): Boolean = this.deepNonNull(resolver).isAssignableFrom(other.deepNonNull(resolver))
