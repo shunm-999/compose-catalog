@@ -4,5 +4,8 @@ plugins {
 }
 
 dependencies {
+    implementation(projects.presentation.shared)
     implementation(project(":domain:component"))
+
+    add("kspCommonMainMetadata", project(":tools:ksp-processor"))
 }

@@ -116,6 +116,9 @@ composablePreviewScannerAndroid = { module = "io.github.sergio-sastre.Composable
 composablePreviewScannerJvm = { module = "io.github.sergio-sastre.ComposablePreviewScanner:jvm", version.ref = "composablePreviewScanner" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 
+# compiler
+kspSymbolProcessingApi = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }

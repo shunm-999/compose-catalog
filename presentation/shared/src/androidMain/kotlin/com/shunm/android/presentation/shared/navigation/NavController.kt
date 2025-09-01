@@ -1,18 +1,26 @@
-package com.shunm.android.compose_catalog.navigation
+package com.shunm.android.presentation.shared.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import kotlin.reflect.KClass
 
 @Composable
-internal fun rememberNavController(backStack: SnapshotStateList<NavRoute>): NavController {
-    return NavController(backStack)
+fun rememberNavController(backStack: SnapshotStateList<NavRoute>): NavController {
+    return NavControllerImpl(backStack)
 }
 
-internal class NavController(
-    private val backStack: SnapshotStateList<NavRoute>
-) {
-    fun navigate(route: NavRoute, builderAction: NavOptionBuilder.() -> Unit = {}) {
+interface NavController {
+    fun navigate(route: NavRoute, builderAction: NavOptionBuilder.() -> Unit = {})
+
+    fun popUpTo(route: NavRoute, inclusive: Boolean = false)
+
+    fun popBackStack(): NavRoute?
+}
+
+internal class NavControllerImpl(
+    private val backStack: SnapshotStateList<NavRoute>,
+) : NavController {
+    override fun navigate(route: NavRoute, builderAction: NavOptionBuilder.() -> Unit) {
         val navOption = NavOptionBuilder().apply(builderAction).build()
 
         if (navOption.popUpTo != null) {
@@ -30,7 +38,7 @@ internal class NavController(
         }
     }
 
-    fun popUpTo(route: NavRoute, inclusive: Boolean = false) {
+    override fun popUpTo(route: NavRoute, inclusive: Boolean) {
         popUpTo(inclusive = inclusive) { it::class == route::class }
     }
 
@@ -50,19 +58,19 @@ internal class NavController(
         }
     }
 
-    fun popBackStack(): NavRoute? {
+    override fun popBackStack(): NavRoute? {
         return backStack.removeLastOrNull()
     }
 }
 
 internal data class NavOption(
     val popUpTo: PopUpTo?,
-    val singleTop: SingleTop?
+    val singleTop: SingleTop?,
 ) {
 
     data class PopUpTo(
         val route: KClass<out NavRoute>,
-        val inclusive: Boolean = false
+        val inclusive: Boolean = false,
     )
 
     object SingleTop
@@ -83,7 +91,7 @@ class NavOptionBuilder {
                 NavOption.SingleTop
             } else {
                 null
-            }
+            },
         )
     }
 }
@@ -96,4 +104,3 @@ inline fun <reified T : NavRoute> NavOptionBuilder.popUpTo(builderAction: PopUpT
     val popUpToBuilder = PopUpToBuilder().apply(builderAction)
     popUpTo(route = T::class, inclusive = popUpToBuilder.inclusive)
 }
-

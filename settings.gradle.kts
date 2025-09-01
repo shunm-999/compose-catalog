@@ -25,4 +25,6 @@ dependencyResolutionManagement {
 include(":composeApp")
 include(":domain:category")
 include(":domain:component")
+include(":presentation:shared")
 include(":presentation:component")
+include(":tools:ksp-processor")
