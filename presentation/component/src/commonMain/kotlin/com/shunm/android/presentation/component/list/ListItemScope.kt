@@ -19,7 +19,7 @@ data object ListItemContentSupportingTextScope : ListItemScope
 sealed interface ListItemTrailingScope : ListItemScope
 
 internal data class ListItemLeadingScopeImpl(
-    private val contentScope: ListItemContentScope,
+    val contentScope: ListItemContentScope,
 ) : ListItemLeadingScope
 
 data class OneLineListItemContentScope(
