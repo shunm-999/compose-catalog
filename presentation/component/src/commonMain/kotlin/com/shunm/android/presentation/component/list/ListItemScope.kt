@@ -64,15 +64,23 @@ internal data class ListItemTrailingScopeImpl(
 data object ListItemContentScopeProvider {
     fun oneLine(
         headline: @Composable ListItemContentHeadlineScope.() -> Unit,
-    ): ListItemContentScope = OneLineListItemContentScope(headline)
+    ): ListItemContentScope = OneLineListItemContentScope(
+        headline = headline,
+    )
 
     fun twoLine(
         headline: @Composable ListItemContentHeadlineScope.() -> Unit,
         supportingText: @Composable ListItemContentSupportingTextScope.() -> Unit,
-    ): ListItemContentScope = TwoLineListItemContentScope(headline, supportingText)
+    ): ListItemContentScope = TwoLineListItemContentScope(
+        headline = headline,
+        supportingText = supportingText,
+    )
 
     fun threeLine(
         headline: @Composable ListItemContentHeadlineScope.() -> Unit,
         supportingText: @Composable ListItemContentSupportingTextScope.() -> Unit,
-    ): ListItemContentScope = ThreeLineListItemContentScope(headline, supportingText)
+    ): ListItemContentScope = ThreeLineListItemContentScope(
+        headline = headline,
+        supportingText = supportingText,
+    )
 }
