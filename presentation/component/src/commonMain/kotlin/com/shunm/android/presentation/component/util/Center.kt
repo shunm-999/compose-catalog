@@ -17,3 +17,16 @@ fun Center(
         content()
     }
 }
+
+@Composable
+fun TopCenter(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
+    Box(
+        contentAlignment = Alignment.TopCenter,
+        modifier = modifier,
+    ) {
+        content()
+    }
+}
