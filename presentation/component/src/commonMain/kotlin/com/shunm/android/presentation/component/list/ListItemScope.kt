@@ -2,6 +2,7 @@ package com.shunm.android.presentation.component.list
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 
 sealed interface ListItemScope
 
@@ -14,7 +15,9 @@ sealed interface ListItemContentScope : ListItemScope {
 
 data object ListItemContentHeadlineScope : ListItemScope
 
-data object ListItemContentSupportingTextScope : ListItemScope
+data class ListItemContentSupportingTextScope(
+    val contentScope: ListItemContentScope,
+) : ListItemScope
 
 sealed interface ListItemTrailingScope : ListItemScope
 
@@ -27,7 +30,11 @@ data class OneLineListItemContentScope(
 ) : ListItemContentScope {
     @Composable
     override fun Content() {
-        ListItemContentHeadlineScope.headline()
+        Column(
+            modifier = Modifier.contentPadding()
+        ) {
+            ListItemContentHeadlineScope.headline()
+        }
     }
 }
 
@@ -37,9 +44,11 @@ data class TwoLineListItemContentScope(
 ) : ListItemContentScope {
     @Composable
     override fun Content() {
-        Column {
+        Column(
+            modifier = Modifier.contentPadding()
+        ) {
             ListItemContentHeadlineScope.headline()
-            ListItemContentSupportingTextScope.supportingText()
+            ListItemContentSupportingTextScope(this@TwoLineListItemContentScope).supportingText()
         }
     }
 }
@@ -50,9 +59,11 @@ data class ThreeLineListItemContentScope(
 ) : ListItemContentScope {
     @Composable
     override fun Content() {
-        Column {
+        Column(
+            modifier = Modifier.contentPadding()
+        ) {
             ListItemContentHeadlineScope.headline()
-            ListItemContentSupportingTextScope.supportingText()
+            ListItemContentSupportingTextScope(this@ThreeLineListItemContentScope).supportingText()
         }
     }
 }

@@ -22,7 +22,6 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ListItem(
-    modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
     enabled: Boolean = true,
     hasDivider: Boolean = false,
@@ -34,7 +33,7 @@ fun ListItem(
     val contentScope = ListItemContentScopeProvider.rememberContentProvider()
 
     Surface(
-        modifier = modifier.containerPadding(
+        modifier = Modifier.containerPadding(
             contentScope = contentScope,
             isLeadingExists = leading != null,
             isTrailingExists = trailing != null,
@@ -44,7 +43,10 @@ fun ListItem(
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             Row(
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = when (contentScope) {
+                    is OneLineListItemContentScope, is TwoLineListItemContentScope -> Alignment.CenterVertically
+                    is ThreeLineListItemContentScope -> Alignment.Top
+                },
             ) {
                 if (leading != null) {
                     ListItemLeadingScopeImpl(contentScope).leading()
@@ -110,3 +112,60 @@ private fun OneLineListItemPreview() {
         }
     )
 }
+
+@Preview
+@Composable
+private fun TwoLineListItemPreview() {
+    ListItem(
+        leading = {
+            LeadingIcon(
+                imageVector = Icons.Default.Person
+            )
+        },
+        content = {
+            twoLine(
+                headline = {
+                    Headline(text = "Headline")
+                },
+                supportingText = {
+                    SupportingText(text = "Supporting text")
+                }
+            )
+        },
+        trailing = {
+            TrailingCheckbox(
+                checked = true,
+                onCheckedChange = {},
+            )
+        }
+    )
+}
+
+@Preview
+@Composable
+private fun ThreeLineListItemPreview() {
+    ListItem(
+        leading = {
+            LeadingIcon(
+                imageVector = Icons.Default.Person
+            )
+        },
+        content = {
+            threeLine(
+                headline = {
+                    Headline(text = "Headline")
+                },
+                supportingText = {
+                    SupportingText(text = "Supporting text Supporting text Supporting text")
+                }
+            )
+        },
+        trailing = {
+            TrailingCheckbox(
+                checked = true,
+                onCheckedChange = {},
+            )
+        }
+    )
+}
+
