@@ -17,9 +17,7 @@ import com.shunm.android.presentation.component.util.Center
 fun ListItemLeadingScope.LeadingIcon(
     imageVector: ImageVector,
 ) {
-    Center(
-        modifier = Modifier.leadingPadding(),
-    ) {
+    Edge {
         Icon(
             modifier = Modifier.size(24.dp),
             imageVector = imageVector,
@@ -33,9 +31,7 @@ fun ListItemLeadingScope.LeadingAvatar(
     imageVector: ImageVector,
     contentDescription: String? = null,
 ) {
-    Center(
-        modifier = Modifier.leadingPadding(),
-    ) {
+    Edge {
         Icon(
             modifier = Modifier.size(40.dp),
             imageVector = imageVector,
@@ -49,9 +45,7 @@ fun ListItemLeadingScope.LeadingImage(
     painter: Painter,
     contentDescription: String? = null,
 ) {
-    Center(
-        modifier = Modifier.leadingPadding(),
-    ) {
+    Edge {
         Image(
             modifier = Modifier.size(56.dp),
             painter = painter,
@@ -65,9 +59,7 @@ fun ListItemLeadingScope.LeadingImage(
     url: String,
     contentDescription: String? = null,
 ) {
-    Center(
-        modifier = Modifier.leadingPadding(),
-    ) {
+    Edge {
         AsyncImage(
             modifier = Modifier.size(56.dp),
             model = url,
@@ -89,17 +81,6 @@ fun ListItemLeadingScope.LeadingVideoThumbnail(
             painter = painter,
             contentDescription = contentDescription,
         )
-    }
-}
-
-context(scope: ListItemLeadingScope)
-private fun Modifier.leadingPadding(): Modifier = when ((scope as ListItemLeadingScopeImpl).contentScope) {
-    is OneLineListItemContentScope, is TwoLineListItemContentScope -> {
-        this.padding(vertical = 8.dp, horizontal = 16.dp)
-    }
-
-    is ThreeLineListItemContentScope -> {
-        this.padding(vertical = 12.dp, horizontal = 16.dp)
     }
 }
 

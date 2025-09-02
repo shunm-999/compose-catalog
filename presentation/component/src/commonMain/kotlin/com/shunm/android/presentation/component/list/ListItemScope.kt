@@ -58,7 +58,7 @@ data class ThreeLineListItemContentScope(
 }
 
 internal data class ListItemTrailingScopeImpl(
-    private val contentScope: ListItemContentScope,
+    val contentScope: ListItemContentScope,
 ) : ListItemTrailingScope
 
 data object ListItemContentScopeProvider {
