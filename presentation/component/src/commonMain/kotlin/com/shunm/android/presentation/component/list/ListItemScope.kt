@@ -1,28 +1,61 @@
 package com.shunm.android.presentation.component.list
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 
 sealed interface ListItemScope
 
-data object ListItemLeadingScope : ListItemScope
+sealed interface ListItemLeadingScope : ListItemScope
 
-sealed interface ListItemContentScope : ListItemScope
+sealed interface ListItemContentScope : ListItemScope {
+    @Composable
+    fun Content()
+}
 
-data object ListItemTrailingScope : ListItemScope
+sealed interface ListItemTrailingScope : ListItemScope
+
+internal data class ListItemLeadingScopeImpl(
+    private val contentScope: ListItemContentScope,
+) : ListItemLeadingScope
 
 data class OneLineListItemContentScope(
     val headline: @Composable () -> Unit,
-) : ListItemContentScope
+) : ListItemContentScope {
+    @Composable
+    override fun Content() {
+        headline()
+    }
+}
 
 data class TwoLineListItemContentScope(
     val headline: @Composable () -> Unit,
     val supportingText: @Composable () -> Unit,
-) : ListItemContentScope
+) : ListItemContentScope {
+    @Composable
+    override fun Content() {
+        Column {
+            headline()
+            supportingText()
+        }
+    }
+}
 
 data class ThreeLineListItemContentScope(
     val headline: @Composable () -> Unit,
     val supportingText: @Composable () -> Unit,
-) : ListItemContentScope
+) : ListItemContentScope {
+    @Composable
+    override fun Content() {
+        Column {
+            headline()
+            supportingText()
+        }
+    }
+}
+
+internal data class ListItemTrailingScopeImpl(
+    private val contentScope: ListItemContentScope,
+) : ListItemTrailingScope
 
 data object ListItemContentScopeProvider {
     fun oneLine(
