@@ -1,9 +1,13 @@
 package com.shunm.android.presentation.component.list
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -14,9 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.shunm.android.presentation.shared.ext.useIf
 import com.shunm.android.presentation.shared.ext.useIfNonNull
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ListItem(
+    modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
     enabled: Boolean = true,
     hasDivider: Boolean = false,
@@ -28,14 +34,15 @@ fun ListItem(
     val contentScope = ListItemContentScopeProvider.rememberContentProvider()
 
     Surface(
-        modifier = Modifier.containerPadding(
+        modifier = modifier.containerPadding(
+            contentScope = contentScope,
             isLeadingExists = leading != null,
             isTrailingExists = trailing != null,
         ).useIfNonNull(onClick) {
             clickable(onClick = it, enabled = enabled)
         },
     ) {
-        Column {
+        Column(modifier = Modifier.fillMaxWidth()) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -43,7 +50,12 @@ fun ListItem(
                     ListItemLeadingScopeImpl(contentScope).leading()
                 }
 
-                contentScope.Content()
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                ) {
+                    contentScope.Content()
+                }
 
                 if (trailing != null) {
                     ListItemTrailingScopeImpl(contentScope).trailing()
@@ -57,12 +69,44 @@ fun ListItem(
 }
 
 private fun Modifier.containerPadding(
+    contentScope: ListItemContentScope,
     isLeadingExists: Boolean,
     isTrailingExists: Boolean,
 ): Modifier = this.useIf(!isLeadingExists && !isTrailingExists) {
-    padding(vertical = 16.dp)
+    when (contentScope) {
+        is OneLineListItemContentScope, is ThreeLineListItemContentScope -> {
+            padding(vertical = 8.dp)
+        }
+
+        is TwoLineListItemContentScope -> {
+            padding(vertical = 12.dp)
+        }
+    }
 }.useIf(!isLeadingExists) {
     padding(start = 16.dp)
 }.useIf(!isTrailingExists) {
     padding(end = 16.dp)
+}
+
+@Preview
+@Composable
+private fun OneLineListItemPreview() {
+    ListItem(
+        leading = {
+            LeadingIcon(
+                imageVector = Icons.Default.Person
+            )
+        },
+        content = {
+            oneLine {
+                Headline(text = "Headline")
+            }
+        },
+        trailing = {
+            TrailingCheckbox(
+                checked = true,
+                onCheckedChange = {},
+            )
+        }
+    )
 }

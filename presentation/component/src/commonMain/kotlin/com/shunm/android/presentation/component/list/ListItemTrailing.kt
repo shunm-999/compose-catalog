@@ -1,10 +1,13 @@
 package com.shunm.android.presentation.component.list
 
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
 @Composable
-fun ListItemTrailingScope.SupportingText(
+fun ListItemTrailingScope.TrailingSupportingText(
     text: String,
 ) {
     Edge {
@@ -15,7 +18,8 @@ fun ListItemTrailingScope.SupportingText(
 }
 
 @Composable
-fun ListItemTrailingScope.Checkbox(
+fun ListItemTrailingScope.TrailingCheckbox(
+    enabled: Boolean = true,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
 ) {
@@ -23,12 +27,14 @@ fun ListItemTrailingScope.Checkbox(
         Checkbox(
             checked = checked,
             onCheckedChange = onCheckedChange,
+            enabled = enabled,
         )
     }
 }
 
 @Composable
-fun ListItemTrailingScope.RadioButton(
+fun ListItemTrailingScope.TrailingRadioButton(
+    enabled: Boolean = true,
     selected: Boolean,
     onClick: () -> Unit,
 ) {
@@ -36,12 +42,14 @@ fun ListItemTrailingScope.RadioButton(
         RadioButton(
             selected = selected,
             onClick = onClick,
+            enabled = enabled,
         )
     }
 }
 
 @Composable
-fun ListItemTrailingScope.Switch(
+fun ListItemTrailingScope.TrailingSwitch(
+    enabled: Boolean = true,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
 ) {
@@ -49,6 +57,7 @@ fun ListItemTrailingScope.Switch(
         Switch(
             checked = checked,
             onCheckedChange = onCheckedChange,
+            enabled = enabled,
         )
     }
 }
