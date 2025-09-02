@@ -12,6 +12,10 @@ sealed interface ListItemContentScope : ListItemScope {
     fun Content()
 }
 
+data object ListItemContentHeadlineScope : ListItemScope
+
+data object ListItemContentSupportingTextScope : ListItemScope
+
 sealed interface ListItemTrailingScope : ListItemScope
 
 internal data class ListItemLeadingScopeImpl(
@@ -19,36 +23,36 @@ internal data class ListItemLeadingScopeImpl(
 ) : ListItemLeadingScope
 
 data class OneLineListItemContentScope(
-    val headline: @Composable () -> Unit,
+    val headline: @Composable ListItemContentHeadlineScope.() -> Unit,
 ) : ListItemContentScope {
     @Composable
     override fun Content() {
-        headline()
+        ListItemContentHeadlineScope.headline()
     }
 }
 
 data class TwoLineListItemContentScope(
-    val headline: @Composable () -> Unit,
-    val supportingText: @Composable () -> Unit,
+    val headline: @Composable ListItemContentHeadlineScope.() -> Unit,
+    val supportingText: @Composable ListItemContentSupportingTextScope.() -> Unit,
 ) : ListItemContentScope {
     @Composable
     override fun Content() {
         Column {
-            headline()
-            supportingText()
+            ListItemContentHeadlineScope.headline()
+            ListItemContentSupportingTextScope.supportingText()
         }
     }
 }
 
 data class ThreeLineListItemContentScope(
-    val headline: @Composable () -> Unit,
-    val supportingText: @Composable () -> Unit,
+    val headline: @Composable ListItemContentHeadlineScope.() -> Unit,
+    val supportingText: @Composable ListItemContentSupportingTextScope.() -> Unit,
 ) : ListItemContentScope {
     @Composable
     override fun Content() {
         Column {
-            headline()
-            supportingText()
+            ListItemContentHeadlineScope.headline()
+            ListItemContentSupportingTextScope.supportingText()
         }
     }
 }
@@ -59,16 +63,16 @@ internal data class ListItemTrailingScopeImpl(
 
 data object ListItemContentScopeProvider {
     fun oneLine(
-        headline: @Composable () -> Unit,
+        headline: @Composable ListItemContentHeadlineScope.() -> Unit,
     ): ListItemContentScope = OneLineListItemContentScope(headline)
 
     fun twoLine(
-        headline: @Composable () -> Unit,
-        supportingText: @Composable () -> Unit,
+        headline: @Composable ListItemContentHeadlineScope.() -> Unit,
+        supportingText: @Composable ListItemContentSupportingTextScope.() -> Unit,
     ): ListItemContentScope = TwoLineListItemContentScope(headline, supportingText)
 
     fun threeLine(
-        headline: @Composable () -> Unit,
-        supportingText: @Composable () -> Unit,
+        headline: @Composable ListItemContentHeadlineScope.() -> Unit,
+        supportingText: @Composable ListItemContentSupportingTextScope.() -> Unit,
     ): ListItemContentScope = ThreeLineListItemContentScope(headline, supportingText)
 }
