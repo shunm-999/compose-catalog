@@ -6,6 +6,7 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
+import com.google.devtools.ksp.symbol.KSName
 import com.google.devtools.ksp.symbol.KSType
 
 internal class ComponentListScreenGenerateProcessor(
@@ -34,11 +35,23 @@ internal class ComponentListScreenGenerateProcessor(
                 "androidx.compose.foundation.layout.padding",
                 "androidx.compose.foundation.rememberScrollState",
                 "androidx.compose.foundation.verticalScroll",
+                "androidx.compose.material.icons.Icons",
+                "androidx.compose.material.icons.automirrored.filled.ArrowBack",
+                "androidx.compose.material3.CenterAlignedTopAppBar",
+                "androidx.compose.material3.Icon",
+                "androidx.compose.material3.IconButton",
+                "androidx.compose.material3.Scaffold",
+                "androidx.compose.material3.Text",
                 "androidx.compose.runtime.Composable",
                 "androidx.compose.ui.Modifier",
                 "androidx.compose.ui.unit.dp",
                 "com.shunm.android.presentation.component.di.NullableProvider",
                 "org.jetbrains.compose.ui.tooling.preview.Preview",
+            )
+
+            // add switch function
+            generateSwitchCatalog(
+                catalogMap = catalogMap,
             )
 
             // add Composable function
@@ -49,6 +62,55 @@ internal class ComponentListScreenGenerateProcessor(
                     providers = providers,
                 )
             }
+        }
+    }
+
+    private fun CodeBuilder.generateSwitchCatalog(
+        catalogMap: CatalogMap,
+    ) {
+        section {
+            "@Composable".l()
+            "fun ComponentListScreen(".l {
+                "catalogType: CatalogType,".l()
+                "onBack : () -> Unit = {},".l()
+            }
+            ") {".l {
+                "Scaffold(".l {
+                    "topBar = {".l {
+                        "CenterAlignedTopAppBar(".l {
+                            "title = {".l {
+                                "Text(text = \"ComponentList : \$catalogType\")".l()
+                            }
+                            "},".l()
+                            "navigationIcon = {".l {
+                                "IconButton(".l {
+                                    "onClick = {".l {
+                                        "onBack()".l()
+                                    }
+                                    "}".l()
+                                }
+                                ") {".l {
+                                    "Icon(Icons.AutoMirrored.Default.ArrowBack, null)".l()
+                                }
+                                "}".l()
+                            }
+                            "}".l()
+                        }
+                        ")".l()
+                    }
+                    "}".l()
+                }
+                ") { paddingValues ->".l {
+                    "when (catalogType) {".l {
+                        for (catalogType in catalogMap.entries().keys) {
+                            "CatalogType.$catalogType -> ${catalogType}Catalog()".l()
+                        }
+                    }
+                    "}".l()
+                }
+                "}".l()
+            }
+            "}".l()
         }
     }
 
@@ -109,16 +171,29 @@ internal class ComponentListScreenGenerateProcessor(
         val functionParam = functionParams[count]
         val ch = ('a'.code + count).toChar()
 
-        val forStatement = if (functionParam.type.isDeepNullable()) {
-            "for ($ch in NullableProvider(${functionParam.provider.simpleName.asString()}()).provide()) {"
+        val provider = functionParam.provider
+        val forStatementOpt = if (functionParam.type.isDeepNullable()) {
+            if (provider != null) {
+                "for ($ch in NullableProvider(${functionParam.provider.simpleName.asString()}()).provide()) {"
+            } else {
+                null
+            }
         } else {
-            "for ($ch in ${functionParam.provider.simpleName.asString()}().provide()) {"
+            if (provider != null) {
+                "for ($ch in ${functionParam.provider.simpleName.asString()}().provide()) {"
+            } else {
+                null
+            }
         }
-        forStatement.l {
+
+        forStatementOpt?.l()
+        indentOrNot(forStatementOpt != null) {
             if (count >= functionParams.size - 1) {
                 "${catalog.simpleName.asString()}(".l {
-                    repeat(functionParams.size) {
-                        "${('a'.code + it).toChar()},".l()
+                    functionParams.forEachIndexed { index, param ->
+                        if (param.provider != null) {
+                            "${param.name.asString()} = ${('a'.code + index).toChar()},".l()
+                        }
                     }
                 }
                 ")".l()
@@ -130,7 +205,9 @@ internal class ComponentListScreenGenerateProcessor(
                 )
             }
         }
-        "}".l()
+        if (forStatementOpt != null) {
+            "}".l()
+        }
     }
 
     private fun CodeBuilder.getFunctionParams(
@@ -144,17 +221,11 @@ internal class ComponentListScreenGenerateProcessor(
                 other = param.type.resolve(),
             )
         }
-        if (provider == null) {
-            logger.error(
-                message = "No provider found for parameter: ${param.name?.asString()} of type ${param.type.resolve().declaration.qualifiedName?.asString()} in ${catalog.simpleName.asString()}",
-                symbol = catalog,
-            )
-            throw IllegalStateException("No provider found for parameter: ${param.name?.asString()} of type ${param.type.resolve().declaration.qualifiedName?.asString()} in ${catalog.simpleName.asString()}")
-        }
         dependencies("com.shunm.android.presentation.component.di.NullableProvider")
-        dependencies(provider.qualifiedName?.asString())
+        dependencies(provider?.qualifiedName?.asString())
 
         FunctionParam(
+            name = param.name!!,
             type = param.type.resolve(),
             provider = provider,
         )
@@ -162,6 +233,7 @@ internal class ComponentListScreenGenerateProcessor(
 }
 
 private data class FunctionParam(
+    val name: KSName,
     val type: KSType,
-    val provider: KSClassDeclaration,
+    val provider: KSClassDeclaration?,
 )

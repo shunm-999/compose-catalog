@@ -5,7 +5,11 @@ plugins {
 
 dependencies {
     implementation(projects.presentation.shared)
+    commonMainImplementation(projects.presentation.shared)
     implementation(project(":domain:component"))
+
+    commonMainImplementation(libs.coil)
+    commonMainImplementation(libs.coilNetwork)
 
     add("kspCommonMainMetadata", project(":tools:ksp-processor"))
 }

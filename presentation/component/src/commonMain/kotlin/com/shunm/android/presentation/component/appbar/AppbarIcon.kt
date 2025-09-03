@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.FileUpload
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
@@ -19,7 +20,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun AppbarLeadingButtonScope.LeadingIcon(
+private fun AppbarLeadingButtonScope.LeadingIcon(
     onClick: () -> Unit,
     imageVector: ImageVector,
     contentDescription: String? = null,
@@ -41,6 +42,17 @@ fun AppbarLeadingButtonScope.PopBackIcon(
         contentDescription = stringResource(
             ComponentRes.string.arrow_back_button_content_description,
         ),
+    )
+}
+
+@Composable
+fun AppbarLeadingButtonScope.MenuIcon(
+    onClick: () -> Unit,
+) {
+    LeadingIcon(
+        onClick = onClick,
+        imageVector = Icons.Default.Menu,
+        contentDescription = null,
     )
 }
 
@@ -112,6 +124,6 @@ private fun AppbarIcon(
 @Composable
 private fun PreviewPopBackIcon() {
     Surface {
-        AppbarLeadingButtonScope.PopBackIcon(onClick = {})
+        AppbarLeadingButtonScope().PopBackIcon(onClick = {})
     }
 }
