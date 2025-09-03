@@ -1,14 +1,22 @@
 package com.shunm.android.presentation.component.list
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.shunm.android.presentation.component.util.Center
@@ -37,6 +45,27 @@ fun ListItemLeadingScope.LeadingAvatar(
             imageVector = imageVector,
             contentDescription = contentDescription,
         )
+    }
+}
+
+@Composable
+fun ListItemLeadingScope.LeadingAvatar(
+    text: String,
+) {
+    Edge {
+        Box(
+            modifier = Modifier.background(
+                MaterialTheme.colorScheme.primary,
+            ).clip(CircleShape),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = text,
+                color = MaterialTheme.colorScheme.primaryContainer,
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
+            )
+        }
     }
 }
 
@@ -79,6 +108,22 @@ fun ListItemLeadingScope.LeadingVideoThumbnail(
         Image(
             modifier = Modifier.height(64.dp),
             painter = painter,
+            contentDescription = contentDescription,
+        )
+    }
+}
+
+@Composable
+fun ListItemLeadingScope.LeadingVideoThumbnail(
+    url: String,
+    contentDescription: String? = null,
+) {
+    Center(
+        modifier = Modifier.leadingVideoThumbnailPadding(),
+    ) {
+        AsyncImage(
+            modifier = Modifier.height(64.dp),
+            model = url,
             contentDescription = contentDescription,
         )
     }

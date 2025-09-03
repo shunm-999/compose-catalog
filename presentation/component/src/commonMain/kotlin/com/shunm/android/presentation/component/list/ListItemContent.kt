@@ -13,7 +13,7 @@ fun ListItemContentHeadlineScope.Headline(
         text = text,
         style = MaterialTheme.typography.bodyLarge,
         maxLines = 1,
-        overflow = TextOverflow.Ellipsis
+        overflow = TextOverflow.Ellipsis,
     )
 }
 
@@ -28,6 +28,6 @@ fun ListItemContentSupportingTextScope.SupportingText(
             is OneLineListItemContentScope, is TwoLineListItemContentScope -> 1
             is ThreeLineListItemContentScope -> 2
         },
-        overflow = TextOverflow.Ellipsis
+        overflow = TextOverflow.Ellipsis,
     )
 }

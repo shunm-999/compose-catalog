@@ -31,7 +31,7 @@ data class OneLineListItemContentScope(
     @Composable
     override fun Content() {
         Column(
-            modifier = Modifier.contentPadding()
+            modifier = Modifier.contentPadding(),
         ) {
             ListItemContentHeadlineScope.headline()
         }
@@ -45,7 +45,7 @@ data class TwoLineListItemContentScope(
     @Composable
     override fun Content() {
         Column(
-            modifier = Modifier.contentPadding()
+            modifier = Modifier.contentPadding(),
         ) {
             ListItemContentHeadlineScope.headline()
             ListItemContentSupportingTextScope(this@TwoLineListItemContentScope).supportingText()
@@ -60,7 +60,7 @@ data class ThreeLineListItemContentScope(
     @Composable
     override fun Content() {
         Column(
-            modifier = Modifier.contentPadding()
+            modifier = Modifier.contentPadding(),
         ) {
             ListItemContentHeadlineScope.headline()
             ListItemContentSupportingTextScope(this@ThreeLineListItemContentScope).supportingText()

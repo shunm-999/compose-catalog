@@ -16,10 +16,12 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.shunm.android.presentation.component.di.Catalogable
 import com.shunm.android.presentation.shared.ext.useIf
 import com.shunm.android.presentation.shared.ext.useIfNonNull
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+@Catalogable
 @Composable
 fun ListItem(
     onClick: (() -> Unit)? = null,
@@ -54,7 +56,7 @@ fun ListItem(
 
                 Box(
                     modifier = Modifier
-                        .weight(1f)
+                        .weight(1f),
                 ) {
                     contentScope.Content()
                 }
@@ -96,7 +98,7 @@ private fun OneLineListItemPreview() {
     ListItem(
         leading = {
             LeadingIcon(
-                imageVector = Icons.Default.Person
+                imageVector = Icons.Default.Person,
             )
         },
         content = {
@@ -109,7 +111,7 @@ private fun OneLineListItemPreview() {
                 checked = true,
                 onCheckedChange = {},
             )
-        }
+        },
     )
 }
 
@@ -119,7 +121,7 @@ private fun TwoLineListItemPreview() {
     ListItem(
         leading = {
             LeadingIcon(
-                imageVector = Icons.Default.Person
+                imageVector = Icons.Default.Person,
             )
         },
         content = {
@@ -129,7 +131,7 @@ private fun TwoLineListItemPreview() {
                 },
                 supportingText = {
                     SupportingText(text = "Supporting text")
-                }
+                },
             )
         },
         trailing = {
@@ -137,7 +139,7 @@ private fun TwoLineListItemPreview() {
                 checked = true,
                 onCheckedChange = {},
             )
-        }
+        },
     )
 }
 
@@ -147,7 +149,7 @@ private fun ThreeLineListItemPreview() {
     ListItem(
         leading = {
             LeadingIcon(
-                imageVector = Icons.Default.Person
+                imageVector = Icons.Default.Person,
             )
         },
         content = {
@@ -157,7 +159,7 @@ private fun ThreeLineListItemPreview() {
                 },
                 supportingText = {
                     SupportingText(text = "Supporting text Supporting text Supporting text")
-                }
+                },
             )
         },
         trailing = {
@@ -165,7 +167,6 @@ private fun ThreeLineListItemPreview() {
                 checked = true,
                 onCheckedChange = {},
             )
-        }
+        },
     )
 }
-
