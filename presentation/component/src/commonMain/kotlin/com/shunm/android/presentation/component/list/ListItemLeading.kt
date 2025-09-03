@@ -54,9 +54,11 @@ fun ListItemLeadingScope.LeadingAvatar(
 ) {
     Edge {
         Box(
-            modifier = Modifier.background(
-                MaterialTheme.colorScheme.primary,
-            ).clip(CircleShape),
+            modifier = Modifier.size(40.dp)
+                .clip(CircleShape)
+                .background(
+                    MaterialTheme.colorScheme.primary,
+                ),
             contentAlignment = Alignment.Center,
         ) {
             Text(

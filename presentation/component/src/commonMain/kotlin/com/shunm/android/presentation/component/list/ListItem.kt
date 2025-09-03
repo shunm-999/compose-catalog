@@ -95,24 +95,44 @@ private fun Modifier.containerPadding(
 @Preview
 @Composable
 private fun OneLineListItemPreview() {
-    ListItem(
-        leading = {
-            LeadingIcon(
-                imageVector = Icons.Default.Person,
-            )
-        },
-        content = {
-            oneLine {
-                Headline(text = "Headline")
-            }
-        },
-        trailing = {
-            TrailingCheckbox(
-                checked = true,
-                onCheckedChange = {},
-            )
-        },
-    )
+    Column {
+        ListItem(
+            leading = {
+                LeadingIcon(
+                    imageVector = Icons.Default.Person,
+                )
+            },
+            content = {
+                oneLine {
+                    Headline(text = "Headline")
+                }
+            },
+            trailing = {
+                TrailingCheckbox(
+                    checked = true,
+                    onCheckedChange = {},
+                )
+            },
+        )
+        ListItem(
+            leading = {
+                LeadingAvatar(
+                    text = "A",
+                )
+            },
+            content = {
+                oneLine {
+                    Headline(text = "Headline")
+                }
+            },
+            trailing = {
+                TrailingCheckbox(
+                    checked = true,
+                    onCheckedChange = {},
+                )
+            },
+        )
+    }
 }
 
 @Preview
