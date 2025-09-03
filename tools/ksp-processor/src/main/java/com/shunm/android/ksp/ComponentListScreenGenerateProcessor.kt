@@ -6,6 +6,7 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
+import com.google.devtools.ksp.symbol.KSName
 import com.google.devtools.ksp.symbol.KSType
 
 internal class ComponentListScreenGenerateProcessor(
@@ -191,7 +192,7 @@ internal class ComponentListScreenGenerateProcessor(
                 "${catalog.simpleName.asString()}(".l {
                     functionParams.forEachIndexed { index, param ->
                         if (param.provider != null) {
-                            "${('a'.code + index).toChar()},".l()
+                            "${param.name.asString()} = ${('a'.code + index).toChar()},".l()
                         }
                     }
                 }
@@ -224,6 +225,7 @@ internal class ComponentListScreenGenerateProcessor(
         dependencies(provider?.qualifiedName?.asString())
 
         FunctionParam(
+            name = param.name!!,
             type = param.type.resolve(),
             provider = provider,
         )
@@ -231,6 +233,7 @@ internal class ComponentListScreenGenerateProcessor(
 }
 
 private data class FunctionParam(
+    val name: KSName,
     val type: KSType,
     val provider: KSClassDeclaration?,
 )

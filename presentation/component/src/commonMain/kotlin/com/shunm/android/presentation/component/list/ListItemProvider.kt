@@ -15,37 +15,121 @@ internal class ListItemLeadingProvider : Provider<@Composable (ListItemLeadingSc
         return listOf(
             {
                 LeadingIcon(
-                    imageVector = Icons.Default.Person
+                    imageVector = Icons.Default.Person,
                 )
             },
             {
                 LeadingAvatar(
-                    imageVector = Icons.Default.Person
+                    imageVector = Icons.Default.Person,
                 )
             },
             {
                 LeadingAvatar(
-                    text = "A"
+                    text = "A",
                 )
             },
             {
                 LeadingImage(
-                    painter = painterResource(ComponentRes.drawable.pixnio_6000x4000)
+                    painter = painterResource(ComponentRes.drawable.pixnio_6000x4000),
                 )
             },
             {
                 LeadingImage(
-                    url = "https://images.dog.ceo/breeds/hound-english/n02089973_1.jpg"
+                    url = "https://images.dog.ceo/breeds/hound-english/n02089973_1.jpg",
                 )
             },
             {
                 LeadingVideoThumbnail(
-                    painter = painterResource(ComponentRes.drawable.pixnio_6000x4000)
+                    painter = painterResource(ComponentRes.drawable.pixnio_6000x4000),
                 )
             },
             {
                 LeadingVideoThumbnail(
-                    url = "https://images.dog.ceo/breeds/hound-english/n02089973_1.jpg"
+                    url = "https://images.dog.ceo/breeds/hound-english/n02089973_1.jpg",
+                )
+            },
+        )
+    }
+}
+
+@CatalogProvider
+internal class ListItemContentProvider : Provider<ListItemContentScopeProvider.() -> ListItemContentScope> {
+    override fun provide(): List<ListItemContentScopeProvider.() -> ListItemContentScope> {
+        return listOf(
+            {
+                OneLineListItemContentScope(
+                    headline = {
+                        Headline(text = "Headline")
+                    },
+                )
+            },
+            {
+                TwoLineListItemContentScope(
+                    headline = {
+                        Headline(text = "Headline")
+                    },
+                    supportingText = {
+                        SupportingText(text = "Supporting text")
+                    },
+                )
+            },
+            {
+                ThreeLineListItemContentScope(
+                    headline = {
+                        Headline(text = "Headline")
+                    },
+                    supportingText = {
+                        SupportingText(text = "Supporting text that is long enough to fill up multiple lines")
+                    },
+                )
+            },
+        )
+    }
+}
+
+@CatalogProvider
+internal class ListItemTrailingProvider : Provider<@Composable (ListItemTrailingScope.() -> Unit)> {
+    override fun provide(): List<@Composable (ListItemTrailingScope.() -> Unit)> {
+        return listOf(
+            {
+                TrailingSupportingText(
+                    text = "100+",
+                )
+            },
+            {
+                TrailingCheckbox(
+                    checked = true,
+                    onCheckedChange = {},
+                )
+            },
+            {
+                TrailingCheckbox(
+                    checked = true,
+                    onCheckedChange = {},
+                )
+            },
+            {
+                TrailingRadioButton(
+                    selected = true,
+                    onClick = {},
+                )
+            },
+            {
+                TrailingRadioButton(
+                    selected = false,
+                    onClick = {},
+                )
+            },
+            {
+                TrailingSwitch(
+                    checked = true,
+                    onCheckedChange = {},
+                )
+            },
+            {
+                TrailingSwitch(
+                    checked = false,
+                    onCheckedChange = {},
                 )
             },
         )
