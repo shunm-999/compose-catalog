@@ -17,6 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -155,10 +157,12 @@ private fun ListGraphOuter(
 
 @Composable
 context(context: LineGraphContext)
-fun LineGraphXLabel(
+private fun LineGraphXLabel(
     borderColor: Color,
     borderWidth: Dp,
 ) {
+    val textMeasurer = rememberTextMeasurer()
+    val textStyle = MaterialTheme.typography.labelSmall
     Column(
         modifier = Modifier.fillMaxWidth(),
     ) {
@@ -172,6 +176,15 @@ fun LineGraphXLabel(
                         start = Offset(x, 0f),
                         end = Offset(x, 4.dp.toPx()),
                         strokeWidth = borderWidth.toPx(),
+                    )
+                    val text = context.points[count].x.toString()
+                    val textLayoutResult = textMeasurer.measure(
+                        text = text,
+                        style = textStyle,
+                    )
+                    drawText(
+                        textLayoutResult = textLayoutResult,
+                        topLeft = Offset(x - (textLayoutResult.size.width / 2), 8.dp.toPx()),
                     )
                 }
             },
