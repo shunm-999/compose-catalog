@@ -20,16 +20,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.math.ceil
 import kotlin.math.floor
-import kotlin.math.pow
 import kotlin.math.truncate
 
 data class LineGraphPoint(
@@ -43,7 +44,6 @@ data class LineGraphContext(
     val yLabel: String?,
     val points: List<LineGraphPoint>,
     val scaleCount: Int,
-    val yScaleSpace: Dp,
 ) {
 
     val xRange: ClosedFloatingPointRange<Float>
@@ -79,8 +79,6 @@ data class LineGraphContext(
         }
         return truncate(minY + ((maxY - minY) / (scaleCount - 1) * index))
     }
-
-    fun height(): Dp = yScaleSpace * scaleCount
 }
 
 class LineGraphContextBuilder {
@@ -110,7 +108,6 @@ class LineGraphContextBuilder {
         yLabel = yLabel,
         points = points.toList(),
         scaleCount = scaleCount,
-        yScaleSpace = yScaleSpace,
     )
 }
 
@@ -134,6 +131,7 @@ fun ListGraph(
     lineColor: Color = MaterialTheme.colorScheme.primary,
     borderColor: Color = MaterialTheme.colorScheme.onSurface,
     borderWidth: Dp = 1.dp,
+    yScaleSpace: Dp = 32.dp,
 ) {
     with(context) {
         ListGraphOuter(
@@ -141,6 +139,7 @@ fun ListGraph(
             contentColor = contentColor,
             borderColor = borderColor,
             borderWidth = borderWidth,
+            yScaleSpace = yScaleSpace,
         ) {
         }
     }
@@ -153,6 +152,7 @@ private fun ListGraphOuter(
     contentColor: Color,
     borderColor: Color,
     borderWidth: Dp,
+    yScaleSpace: Dp,
     inner: @Composable () -> Unit,
 ) {
     Surface(
@@ -162,7 +162,11 @@ private fun ListGraphOuter(
         Row {
             Column {
                 TitleSpace()
-                YAxis()
+                YAxis(
+                    borderColor = borderColor,
+                    borderWidth = borderWidth,
+                    yScaleSpace = yScaleSpace,
+                )
             }
             Column(
                 modifier = Modifier.weight(1f),
@@ -175,7 +179,7 @@ private fun ListGraphOuter(
                     ).padding(
                         vertical = 8.dp,
                         horizontal = 16.dp,
-                    ).fillMaxWidth().height(context.height()),
+                    ).fillMaxWidth().height(yScaleSpace * (context.scaleCount - 1)),
                 ) {
                     inner()
                 }
@@ -261,14 +265,55 @@ private fun XAxis(
 
 @Composable
 context(context: LineGraphContext)
-private fun YAxis() {
+private fun YAxis(
+    borderColor: Color,
+    borderWidth: Dp,
+    yScaleSpace: Dp,
+) {
     val textMeasurer = rememberTextMeasurer()
     val textStyle = MaterialTheme.typography.labelSmall
     Row(
-        modifier = Modifier
-            .width(32.dp)
-            .height(context.height()),
+        modifier = Modifier,
     ) {
+        if (context.yLabel != null) {
+            Text(
+                modifier = Modifier.align(Alignment.CenterVertically)
+                    .padding(horizontal = 4.dp),
+                text = context.yLabel.toCharArray().joinToString(
+                    separator = "\n",
+                ),
+                style = MaterialTheme.typography.labelMedium,
+                textAlign = TextAlign.Center,
+            )
+        }
+        Box(
+            modifier = Modifier
+                .width(32.dp)
+                .height(yScaleSpace * context.scaleCount)
+                .drawBehind {
+                    repeat(context.scaleCount) { count ->
+                        val y = 8.dp.toPx() + (yScaleSpace * count).toPx()
+                        drawLine(
+                            color = borderColor,
+                            start = Offset(size.width - 4.dp.toPx(), y),
+                            end = Offset(size.width, y),
+                            strokeWidth = borderWidth.toPx(),
+                        )
+                        val text = context.yScale(count).toString()
+                        val textLayoutResult = textMeasurer.measure(
+                            text = text,
+                            style = textStyle,
+                        )
+                        drawText(
+                            textLayoutResult = textLayoutResult,
+                            topLeft = Offset(
+                                size.width - 8.dp.toPx() - textLayoutResult.size.width,
+                                y - (textLayoutResult.size.height / 2),
+                            ),
+                        )
+                    }
+                },
+        )
     }
 }
 
