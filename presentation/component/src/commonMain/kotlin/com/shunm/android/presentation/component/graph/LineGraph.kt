@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -20,9 +21,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
@@ -129,6 +131,7 @@ fun ListGraph(
     containerColor: Color = MaterialTheme.colorScheme.surface,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
     lineColor: Color = MaterialTheme.colorScheme.primary,
+    lineWidth: Dp = 2.dp,
     borderColor: Color = MaterialTheme.colorScheme.onSurface,
     borderWidth: Dp = 1.dp,
     yScaleSpace: Dp = 32.dp,
@@ -141,6 +144,10 @@ fun ListGraph(
             borderWidth = borderWidth,
             yScaleSpace = yScaleSpace,
         ) {
+            ListGraphInner(
+                lineColor = lineColor,
+                lineWidth = lineWidth,
+            )
         }
     }
 }
@@ -189,6 +196,41 @@ private fun ListGraphOuter(
                 )
             }
         }
+    }
+}
+
+@Composable
+context(context: LineGraphContext)
+private fun ListGraphInner(
+    lineColor: Color,
+    lineWidth: Dp,
+) {
+    Box(
+        Modifier.fillMaxSize()
+            .drawBehind {
+                val path = Path().apply {
+                    context.points.forEachIndexed { index, point ->
+                        val xPercent = (point.x - context.xRange.start) / (context.xRange.endInclusive - context.xRange.start)
+                        val yPercent = (point.y - context.yRange.start) / (context.yRange.endInclusive - context.yRange.start)
+                        val x = 16.dp.toPx() + (xPercent * (size.width - (16.dp.toPx() * 2)))
+                        val y = size.height - (8.dp.toPx() + (yPercent * (size.height - (8.dp.toPx() * 2))))
+                        if (index == 0) {
+                            moveTo(x, y)
+                        } else {
+                            lineTo(x, y)
+                        }
+                    }
+                }
+                drawPath(
+                    path = path,
+                    color = lineColor,
+                    style = Stroke(
+                        width = lineWidth.toPx(),
+                    ),
+                )
+            }
+    ) {
+
     }
 }
 
@@ -278,7 +320,7 @@ private fun YAxis(
         if (context.yLabel != null) {
             Text(
                 modifier = Modifier.align(Alignment.CenterVertically)
-                    .padding(horizontal = 4.dp),
+                    .padding(horizontal = 8.dp),
                 text = context.yLabel.toCharArray().joinToString(
                     separator = "\n",
                 ),
@@ -326,7 +368,7 @@ private fun ListGraphPreview() {
         yLabel = "Y Axis"
         plot(
             x = listOf(0f, 1f, 2f, 3f, 4f, 5f, 6f, 7f, 8f, 9f, 10f),
-            y = listOf(0f, 1f, 4f, 9f, 16f, 25f, 36f, 49f, 64f, 81f, 100f),
+            y = listOf(0f, 1f, 64f, 4f, 100f, 16f, 25f, 9f, 36f, 49f, 81f),
         )
     }
     ListGraph(
