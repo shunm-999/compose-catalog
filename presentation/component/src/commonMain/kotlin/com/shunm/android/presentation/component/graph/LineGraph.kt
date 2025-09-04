@@ -91,8 +91,6 @@ class LineGraphContextBuilder {
 
     var scaleCount: Int = 10
 
-    var yScaleSpace: Dp = 32.dp
-
     fun plot(x: Float, y: Float) {
         points.add(LineGraphPoint(x, y))
     }
@@ -126,7 +124,7 @@ fun rememberLineGraphContext(
 }
 
 @Composable
-fun ListGraph(
+fun LineGraph(
     context: LineGraphContext,
     containerColor: Color = MaterialTheme.colorScheme.surface,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
@@ -137,14 +135,14 @@ fun ListGraph(
     yScaleSpace: Dp = 32.dp,
 ) {
     with(context) {
-        ListGraphOuter(
+        LineGraphOuter(
             containerColor = containerColor,
             contentColor = contentColor,
             borderColor = borderColor,
             borderWidth = borderWidth,
             yScaleSpace = yScaleSpace,
         ) {
-            ListGraphInner(
+            LineGraphInner(
                 lineColor = lineColor,
                 lineWidth = lineWidth,
             )
@@ -154,7 +152,7 @@ fun ListGraph(
 
 @Composable
 context(context: LineGraphContext)
-private fun ListGraphOuter(
+private fun LineGraphOuter(
     containerColor: Color,
     contentColor: Color,
     borderColor: Color,
@@ -201,7 +199,7 @@ private fun ListGraphOuter(
 
 @Composable
 context(context: LineGraphContext)
-private fun ListGraphInner(
+private fun LineGraphInner(
     lineColor: Color,
     lineWidth: Dp,
 ) {
@@ -371,7 +369,7 @@ private fun ListGraphPreview() {
             y = listOf(0f, 1f, 64f, 4f, 100f, 16f, 25f, 9f, 36f, 49f, 81f),
         )
     }
-    ListGraph(
+    LineGraph(
         context = context,
     )
 }
