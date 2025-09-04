@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -17,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -27,6 +29,8 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.math.ceil
 import kotlin.math.floor
+import kotlin.math.pow
+import kotlin.math.truncate
 
 data class LineGraphPoint(
     val x: Float,
@@ -38,23 +42,45 @@ data class LineGraphContext(
     val xLabel: String?,
     val yLabel: String?,
     val points: List<LineGraphPoint>,
+    val scaleCount: Int,
+    val yScaleSpace: Dp,
 ) {
-    val scaleCount
-        get() = points.size
 
     val xRange: ClosedFloatingPointRange<Float>
         get() = points.minOf { it.x }.let { minX ->
-            points.minOf { it.x }.let { maxX ->
+            points.maxOf { it.x }.let { maxX ->
                 floor(minX)..ceil(maxX)
             }
         }
 
     val yRange: ClosedFloatingPointRange<Float>
         get() = points.minOf { it.y }.let { minY ->
-            points.minOf { it.y }.let { maxY ->
+            points.maxOf { it.y }.let { maxY ->
                 floor(minY)..ceil(maxY)
             }
         }
+
+    fun xScale(index: Int): Float {
+        val minX = xRange.start
+        val maxX = xRange.endInclusive
+
+        if (scaleCount <= 1) {
+            return minX
+        }
+        return truncate(minX + ((maxX - minX) / (scaleCount - 1) * index))
+    }
+
+    fun yScale(index: Int): Float {
+        val minY = yRange.start
+        val maxY = yRange.endInclusive
+
+        if (scaleCount <= 1) {
+            return minY
+        }
+        return truncate(minY + ((maxY - minY) / (scaleCount - 1) * index))
+    }
+
+    fun height(): Dp = yScaleSpace * scaleCount
 }
 
 class LineGraphContextBuilder {
@@ -62,6 +88,10 @@ class LineGraphContextBuilder {
     var xLabel: String? = null
     var yLabel: String? = null
     val points: MutableList<LineGraphPoint> = mutableListOf()
+
+    var scaleCount: Int = 10
+
+    var yScaleSpace: Dp = 32.dp
 
     fun plot(x: Float, y: Float) {
         points.add(LineGraphPoint(x, y))
@@ -79,6 +109,8 @@ class LineGraphContextBuilder {
         xLabel = xLabel,
         yLabel = yLabel,
         points = points.toList(),
+        scaleCount = scaleCount,
+        yScaleSpace = yScaleSpace,
     )
 }
 
@@ -97,8 +129,6 @@ fun rememberLineGraphContext(
 @Composable
 fun ListGraph(
     context: LineGraphContext,
-    scaleCount: Int = 10,
-    yScaleSpace: Dp = 32.dp,
     containerColor: Color = MaterialTheme.colorScheme.surface,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
     lineColor: Color = MaterialTheme.colorScheme.primary,
@@ -107,7 +137,6 @@ fun ListGraph(
 ) {
     with(context) {
         ListGraphOuter(
-            modifier = Modifier.fillMaxWidth().height(yScaleSpace * scaleCount + 16.dp),
             containerColor = containerColor,
             contentColor = contentColor,
             borderColor = borderColor,
@@ -120,7 +149,6 @@ fun ListGraph(
 @Composable
 context(context: LineGraphContext)
 private fun ListGraphOuter(
-    modifier: Modifier = Modifier,
     containerColor: Color,
     contentColor: Color,
     borderColor: Color,
@@ -128,13 +156,14 @@ private fun ListGraphOuter(
     inner: @Composable () -> Unit,
 ) {
     Surface(
-        modifier = modifier,
         color = containerColor,
         contentColor = contentColor,
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-        ) {
+        Row {
+            Column {
+                TitleSpace()
+                YAxis()
+            }
             Column(
                 modifier = Modifier.weight(1f),
             ) {
@@ -146,7 +175,7 @@ private fun ListGraphOuter(
                     ).padding(
                         vertical = 8.dp,
                         horizontal = 16.dp,
-                    ).fillMaxWidth().weight(1f),
+                    ).fillMaxWidth().height(context.height()),
                 ) {
                     inner()
                 }
@@ -167,7 +196,20 @@ private fun ColumnScope.Title() {
             modifier = Modifier.align(Alignment.CenterHorizontally)
                 .padding(vertical = 4.dp),
             text = context.title,
-            style = MaterialTheme.typography.labelLarge
+            style = MaterialTheme.typography.labelLarge,
+        )
+    }
+}
+
+@Composable
+context(context: LineGraphContext)
+private fun ColumnScope.TitleSpace() {
+    if (context.title != null) {
+        Text(
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+                .padding(vertical = 4.dp).alpha(0f),
+            text = "a",
+            style = MaterialTheme.typography.labelLarge,
         )
     }
 }
@@ -194,7 +236,7 @@ private fun XAxis(
                         end = Offset(x, 4.dp.toPx()),
                         strokeWidth = borderWidth.toPx(),
                     )
-                    val text = context.points[count].x.toString()
+                    val text = context.xScale(count).toString()
                     val textLayoutResult = textMeasurer.measure(
                         text = text,
                         style = textStyle,
@@ -211,15 +253,23 @@ private fun XAxis(
                 modifier = Modifier.align(Alignment.CenterHorizontally)
                     .padding(vertical = 4.dp),
                 text = context.xLabel,
-                style = MaterialTheme.typography.labelMedium
+                style = MaterialTheme.typography.labelMedium,
             )
         }
     }
 }
 
-private sealed interface OrientationScope {
-    object Horizontal : OrientationScope
-    object Vertical : OrientationScope
+@Composable
+context(context: LineGraphContext)
+private fun YAxis() {
+    val textMeasurer = rememberTextMeasurer()
+    val textStyle = MaterialTheme.typography.labelSmall
+    Row(
+        modifier = Modifier
+            .width(32.dp)
+            .height(context.height()),
+    ) {
+    }
 }
 
 @Preview
