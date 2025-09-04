@@ -99,7 +99,7 @@ private fun getTabRowType(
 
 @Preview
 @Composable
-private fun TabRowPreview() {
+private fun ClTabRowPreview() {
     ClTabRow(
         isPrimary = true,
         selected = 0,
