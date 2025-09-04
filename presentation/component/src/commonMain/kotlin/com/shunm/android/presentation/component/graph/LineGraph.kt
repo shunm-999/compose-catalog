@@ -3,16 +3,19 @@ package com.shunm.android.presentation.component.graph
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -135,6 +138,7 @@ private fun ListGraphOuter(
             Column(
                 modifier = Modifier.weight(1f),
             ) {
+                Title()
                 Box(
                     Modifier.border(
                         width = borderWidth,
@@ -146,7 +150,7 @@ private fun ListGraphOuter(
                 ) {
                     inner()
                 }
-                LineGraphXLabel(
+                XAxis(
                     borderColor = borderColor,
                     borderWidth = borderWidth,
                 )
@@ -157,7 +161,20 @@ private fun ListGraphOuter(
 
 @Composable
 context(context: LineGraphContext)
-private fun LineGraphXLabel(
+private fun ColumnScope.Title() {
+    if (context.title != null) {
+        Text(
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+                .padding(vertical = 4.dp),
+            text = context.title,
+            style = MaterialTheme.typography.labelLarge
+        )
+    }
+}
+
+@Composable
+context(context: LineGraphContext)
+private fun XAxis(
     borderColor: Color,
     borderWidth: Dp,
 ) {
@@ -189,6 +206,14 @@ private fun LineGraphXLabel(
                 }
             },
         )
+        if (context.xLabel != null) {
+            Text(
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+                    .padding(vertical = 4.dp),
+                text = context.xLabel,
+                style = MaterialTheme.typography.labelMedium
+            )
+        }
     }
 }
 
