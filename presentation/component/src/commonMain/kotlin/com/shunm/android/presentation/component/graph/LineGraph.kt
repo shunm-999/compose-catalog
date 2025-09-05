@@ -1,5 +1,10 @@
 package com.shunm.android.presentation.component.graph
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationSpec
+import androidx.compose.animation.core.AnimationVector1D
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,11 +20,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -36,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import com.shunm.android.presentation.component.di.Catalogable
 import com.shunm.android.presentation.component.tab.ClTabRow
 import com.shunm.android.presentation.component.tab.TabItem
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.math.PI
 import kotlin.math.ceil
@@ -56,16 +66,24 @@ data class LineGraphContext(
 ) {
 
     val xRange: ClosedFloatingPointRange<Float>
-        get() = points.minOf { it.x }.let { minX ->
-            points.maxOf { it.x }.let { maxX ->
-                floor(minX)..ceil(maxX)
+        get() = if (points.isEmpty()) {
+            0f..0f
+        } else {
+            points.minOf { it.x }.let { minX ->
+                points.maxOf { it.x }.let { maxX ->
+                    floor(minX)..ceil(maxX)
+                }
             }
         }
 
     val yRange: ClosedFloatingPointRange<Float>
-        get() = points.minOf { it.y }.let { minY ->
-            points.maxOf { it.y }.let { maxY ->
-                floor(minY)..ceil(maxY)
+        get() = if (points.isEmpty()) {
+            0f..0f
+        } else {
+            points.minOf { it.y }.let { minY ->
+                points.maxOf { it.y }.let { maxY ->
+                    floor(minY)..ceil(maxY)
+                }
             }
         }
 
@@ -258,9 +276,13 @@ private fun LineGraphInner(
                     ),
                 )
 
-                val startPoint = context.points.first()
-                val endPoint = context.points.last()
-                val highestPoint = context.points.maxBy { it.y }
+                val startPoint = context.points.firstOrNull()
+                val endPoint = context.points.lastOrNull()
+                val highestPoint = context.points.maxByOrNull { it.y }
+
+                if (startPoint == null || endPoint == null || highestPoint == null) {
+                    return@drawBehind
+                }
 
                 val gradientArea = line.apply {
                     val startX = getX(startPoint)
@@ -419,39 +441,115 @@ private enum class LineGraphTab {
     Monthly,
 }
 
+/**
+ * 可変長の List<Float> を各要素ごとにアニメーションして返す。
+ *
+ * @param target 目標の値リスト（サイズ増減OK）
+ * @param spec   各要素のアニメーション仕様
+ * @param startStrategy 追加要素の初期値を決める戦略
+ *                      既存の同インデックス、なければ最後の要素、なければ target 自身 などにできる
+ */
+@Composable
+private fun animateFloatListAsState(
+    target: List<Float>,
+    spec: AnimationSpec<Float> = spring(stiffness = Spring.StiffnessLow),
+    startStrategy: (index: Int, target: Float, prev: List<Animatable<Float, AnimationVector1D>>) -> Float =
+        { i, t, prev -> prev.getOrNull(i)?.value ?: prev.lastOrNull()?.value ?: t }
+): List<Float> {
+    // 各インデックスの Animatable を保持
+    val anims: SnapshotStateList<Animatable<Float, AnimationVector1D>> =
+        remember { mutableStateListOf() }
+
+    // 1) サイズの整合（追加・削除）
+    LaunchedEffect(target.size) {
+        val prev = anims.toList()
+        // 追加
+        if (target.size > anims.size) {
+            val prevAnimSize = anims.size
+            repeat(target.size - prevAnimSize) { k ->
+                val idx = prevAnimSize + k
+                println("⭐️ add: ${target.size} > ${anims.size} : k=$k, idx=$idx")
+                val start = startStrategy(idx, target[idx], prev)
+                anims.add(Animatable(start))
+            }
+        }
+        // 削除（必要なら exit アニメをしてから削除する拡張も可能）
+        if (target.size < anims.size) {
+            for (i in anims.lastIndex downTo target.size) {
+                anims.removeAt(i)
+            }
+        }
+    }
+
+    // 2) 値の更新（各要素を並列に animateTo）
+    LaunchedEffect(target) {
+        target.forEachIndexed { i, v ->
+            // レース対策：サイズ整合前に来た場合の保険
+            if (i >= anims.size) {
+                anims.add(Animatable(v))
+            }
+            launch {
+                anims[i].animateTo(v, spec)
+            }
+        }
+    }
+
+    // 3) 現在値のリストを State として露出
+    // derivedStateOf 内で anim.value を読むことで更新に追従
+    val values by remember {
+        derivedStateOf { anims.map { it.value } }
+    }
+    return values
+}
+
 @Catalogable
 @Composable
 fun LineGraphCatalogable() {
     var selectedTab by remember { mutableStateOf(LineGraphTab.Daily) }
 
-    // ① タブごとのポイントを作る関数
-    fun generatePoints(tab: LineGraphTab): Pair<List<Float>, List<Float>> = when (tab) {
+    // タブごとのYを同じ長さで生成（補間なし）
+    fun generatePoints(tab: LineGraphTab, size: Int): List<LineGraphPoint> = when (tab) {
         LineGraphTab.Daily -> {
-            // 0..23時のサイン波（見やすいようにスケール）
-            val x = (0..23).map { it.toFloat() }
-            val y = x.map { t -> (kotlin.math.sin(t / 24f * (2f * PI).toFloat()) * 40f + 60f) }
-            x to y
+            // なめらかなサイン波（0..2π の 1 周）
+            (0 until size).map { i ->
+                val t = i / (size - 1f)
+                LineGraphPoint(
+                    x = i.toFloat(),
+                    y = (kotlin.math.sin(t * (2f * PI).toFloat()) * 40f + 60f)
+                )
+            }
         }
         LineGraphTab.Weekly -> {
-            // 月〜日の7点（好きに差し替え可）
-            val x = (1..7).map { it.toFloat() }
-            val y = listOf(12f, 18f, 9f, 14f, 20f, 17f, 11f)
-            x to y
+            // 緩やかな上昇 + 周期揺れ
+            (0 until size).map { i ->
+                val t = i / (size - 1f)
+                val trend = 80f * t
+                val wave  = 8f * kotlin.math.sin(t * 6f) // 周期短め
+                LineGraphPoint(
+                    x = i.toFloat(),
+                    y = trend + wave + 10f
+                )
+            }
         }
         LineGraphTab.Monthly -> {
-            // 1..30日の緩やかなトレンド＋周期変動
-            val x = (1..30).map { it.toFloat() }
-            val y = x.map { t ->
-                val trend = 0.8f * t // 緩やかな上昇
-                val wave = 6f * kotlin.math.sin(t / 5f) // 軽い周期成分
-                trend + wave + 10f
+            // 放物線っぽいカーブ（中央が高い）
+            (0 until size).map { i ->
+                val t = i / (size - 1f)
+                val center = t * 2f - 1f
+                val quad = -(center * center) * 70f + 90f
+                LineGraphPoint(
+                    x = i.toFloat(),
+                    y = quad
+                )
             }
-            x to y
         }
     }
 
     // ② タブ変更時だけポイントを再計算
-    val points = remember(selectedTab) { generatePoints(selectedTab) }
+    val points = remember(selectedTab) { generatePoints(selectedTab, 30) }
+
+    val xPoints = animateFloatListAsState(points.map { it.x })
+    val yPoints = animateFloatListAsState(points.map { it.y })
 
     Surface {
         Column(
@@ -488,8 +586,8 @@ fun LineGraphCatalogable() {
                 yLabel = "Value"
 
                 plot(
-                    x = points.first,
-                    y = points.second,
+                    x = xPoints,
+                    y = yPoints,
                 )
             }
 
