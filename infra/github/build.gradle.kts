@@ -3,4 +3,5 @@ plugins {
 }
 
 dependencies {
+    commonMainImplementation(projects.domain.component)
 }

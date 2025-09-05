@@ -45,8 +45,12 @@ buildkonfig = "0.17.1"
 ktor = "3.2.3"
 ktorfit = "2.6.4"
 
+hilt = "2.57.1"
+hiltAndroidGradlePlugin = "2.57.1"
+
 [libraries]
 androidGradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
+hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hiltAndroidGradlePlugin" }
 kotlinGradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kspGradlePlugin = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp" }
 jetbrainsComposeGradlePlugin = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "jetbrainsCompose" }
@@ -116,6 +120,10 @@ robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectr
 # compiler
 kspSymbolProcessingApi = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 
+# Hilt
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
@@ -131,6 +139,8 @@ ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
 roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 composeHotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+
 
 [bundles]
 plugins = [

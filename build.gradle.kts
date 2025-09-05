@@ -13,4 +13,5 @@ plugins {
     alias(libs.plugins.ktorfit) apply false
     alias(libs.plugins.roborazzi) apply false
     alias(libs.plugins.composeHotReload) apply false
+    alias(libs.plugins.hilt) apply false
 }
