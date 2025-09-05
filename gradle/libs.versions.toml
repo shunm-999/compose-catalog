@@ -72,7 +72,8 @@ ktorKotlinxSerializationJson = { module = "io.ktor:ktor-serialization-kotlinx-js
 ktorfitLib = { module = "de.jensklingenberg.ktorfit:ktorfit-lib", version.ref = "ktorfit" }
 
 # retrofit
-retrofit = { module = "com.squareup.retrofit3:retrofit", version.ref = "retrofit" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+retrofit-kotlinx-serialization-converter = { module = "com.squareup.retrofit2:converter-kotlinx-serialization", version.ref = "retrofit" }
 
 okhttp = { module = "com.squareup.okhttp3:okhttp-bom", version.ref = "okhttp" }
 okhttpCore = { module = "com.squareup.okhttp3:okhttp" }

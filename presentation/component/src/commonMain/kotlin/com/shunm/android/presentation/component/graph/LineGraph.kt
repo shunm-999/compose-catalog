@@ -454,7 +454,7 @@ private fun animateFloatListAsState(
     target: List<Float>,
     spec: AnimationSpec<Float> = spring(stiffness = Spring.StiffnessLow),
     startStrategy: (index: Int, target: Float, prev: List<Animatable<Float, AnimationVector1D>>) -> Float =
-        { i, t, prev -> prev.getOrNull(i)?.value ?: prev.lastOrNull()?.value ?: t }
+        { i, t, prev -> prev.getOrNull(i)?.value ?: prev.lastOrNull()?.value ?: t },
 ): List<Float> {
     // 各インデックスの Animatable を保持
     val anims: SnapshotStateList<Animatable<Float, AnimationVector1D>> =
@@ -515,7 +515,7 @@ fun LineGraphCatalogable() {
                 val t = i / (size - 1f)
                 LineGraphPoint(
                     x = i.toFloat(),
-                    y = (kotlin.math.sin(t * (2f * PI).toFloat()) * 40f + 60f)
+                    y = (kotlin.math.sin(t * (2f * PI).toFloat()) * 40f + 60f),
                 )
             }
         }
@@ -524,10 +524,10 @@ fun LineGraphCatalogable() {
             (0 until size).map { i ->
                 val t = i / (size - 1f)
                 val trend = 80f * t
-                val wave  = 8f * kotlin.math.sin(t * 6f) // 周期短め
+                val wave = 8f * kotlin.math.sin(t * 6f) // 周期短め
                 LineGraphPoint(
                     x = i.toFloat(),
-                    y = trend + wave + 10f
+                    y = trend + wave + 10f,
                 )
             }
         }
@@ -539,7 +539,7 @@ fun LineGraphCatalogable() {
                 val quad = -(center * center) * 70f + 90f
                 LineGraphPoint(
                     x = i.toFloat(),
-                    y = quad
+                    y = quad,
                 )
             }
         }

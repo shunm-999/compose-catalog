@@ -11,7 +11,8 @@ kotlin {
         }
         androidMain.dependencies {
             implementation(libs.library("retrofit"))
-            implementation(libs.library("okhttp"))
+            implementation(libs.library("retrofit-kotlinx-serialization-converter"))
+            implementation(project.dependencies.platform(libs.library("okhttp")))
             implementation(libs.library("okhttpCore"))
             implementation(libs.library("okhttpLoggingInterceptor"))
         }
