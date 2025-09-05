@@ -8,11 +8,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Modifier
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun <T> ClTabRow(
     selected: T,
+    modifier: Modifier = Modifier,
     isPrimary: Boolean = true,
     isScrollable: Boolean = true,
     tabs: TabRowScope.() -> TabRowContext<T>,
@@ -34,6 +36,7 @@ fun <T> ClTabRow(
     when (tabRowType) {
         TabRowType.Primary -> {
             PrimaryTabRow(
+                modifier = modifier,
                 selectedTabIndex = context.items.indexOf(selected),
                 tabs = {
                     context.items.forEach { item ->
@@ -45,6 +48,7 @@ fun <T> ClTabRow(
 
         TabRowType.PrimaryScrollable -> {
             PrimaryScrollableTabRow(
+                modifier = modifier,
                 selectedTabIndex = context.items.indexOf(selected),
                 tabs = {
                     context.items.forEach { item ->
@@ -56,6 +60,7 @@ fun <T> ClTabRow(
 
         TabRowType.Secondary -> {
             SecondaryTabRow(
+                modifier = modifier,
                 selectedTabIndex = context.items.indexOf(selected),
                 tabs = {
                     context.items.forEach { item ->
@@ -67,6 +72,7 @@ fun <T> ClTabRow(
 
         TabRowType.SecondaryScrollable -> {
             SecondaryScrollableTabRow(
+                modifier = modifier,
                 selectedTabIndex = context.items.indexOf(selected),
                 tabs = {
                     context.items.forEach { item ->
