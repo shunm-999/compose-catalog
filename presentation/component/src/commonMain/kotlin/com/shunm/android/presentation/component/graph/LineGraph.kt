@@ -1,6 +1,7 @@
 package com.shunm.android.presentation.component.graph
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -15,8 +16,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -30,6 +33,8 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.shunm.android.presentation.component.tab.ClTabRow
+import com.shunm.android.presentation.component.tab.TabItem
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -406,9 +411,58 @@ private fun YAxis(
     }
 }
 
+private enum class LineGraphTab {
+    Daily,
+    Weekly,
+    Monthly,
+}
+
 @Preview
 @Composable
-private fun ListGraphPreview() {
+private fun LineGraphCatalogable() {
+    var selectedTab: LineGraphTab by remember {
+        mutableStateOf(LineGraphTab.Daily)
+    }
+    Surface {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            ClTabRow(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                isPrimary = true,
+                selected = selectedTab,
+                tabs = {
+                    items(LineGraphTab.entries) { item ->
+                        TabItem(
+                            selected = isSelected,
+                            onClick = {
+                                selectedTab = item
+                            },
+                            text = item.name,
+                        )
+                    }
+                },
+            )
+            val context = rememberLineGraphContext {
+                title = "Sample Line Graph"
+                xLabel = "X Axis"
+                yLabel = "Y Axis"
+                plot(
+                    x = listOf(0f, 1f, 2f, 3f, 4f, 5f, 6f, 7f, 8f, 9f, 10f),
+                    y = listOf(0f, 1f, 64f, 4f, 100f, 16f, 25f, 9f, 36f, 49f, 81f),
+                )
+            }
+            LineGraph(
+                context = context,
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun LineGraphPreview() {
     val context = rememberLineGraphContext {
         title = "Sample Line Graph"
         xLabel = "X Axis"
