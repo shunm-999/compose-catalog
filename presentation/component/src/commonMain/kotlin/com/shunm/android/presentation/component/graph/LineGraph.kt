@@ -177,23 +177,39 @@ private fun LineGraphOuter(
                 modifier = Modifier.weight(1f),
             ) {
                 Title()
-                Box(
-                    Modifier.border(
-                        width = borderWidth,
-                        color = borderColor,
-                    ).padding(
-                        vertical = 8.dp,
-                        horizontal = 16.dp,
-                    ).fillMaxWidth().height(yScaleSpace * (context.scaleCount - 1)),
-                ) {
-                    inner()
-                }
+                LineGraphBox(
+                    borderWidth = borderWidth,
+                    borderColor = borderColor,
+                    yScaleSpace = yScaleSpace,
+                    inner = inner,
+                )
                 XAxis(
                     borderColor = borderColor,
                     borderWidth = borderWidth,
                 )
             }
         }
+    }
+}
+
+@Composable
+context(context: LineGraphContext)
+private fun LineGraphBox(
+    borderWidth: Dp,
+    borderColor: Color,
+    yScaleSpace: Dp,
+    inner: @Composable (() -> Unit),
+) {
+    Box(
+        Modifier.border(
+            width = borderWidth,
+            color = borderColor,
+        ).padding(
+            vertical = 8.dp,
+            horizontal = 16.dp,
+        ).fillMaxWidth().height(yScaleSpace * (context.scaleCount - 1)),
+    ) {
+        inner()
     }
 }
 
@@ -206,12 +222,20 @@ private fun LineGraphInner(
     Box(
         Modifier.fillMaxSize()
             .drawBehind {
-                val path = Path().apply {
+                fun getX(point: LineGraphPoint): Float {
+                    val xPercent = (point.x - context.xRange.start) / (context.xRange.endInclusive - context.xRange.start)
+                    return 16.dp.toPx() + (xPercent * (size.width - (16.dp.toPx() * 2)))
+                }
+
+                fun getY(point: LineGraphPoint): Float {
+                    val yPercent = (point.y - context.yRange.start) / (context.yRange.endInclusive - context.yRange.start)
+                    return size.height - (8.dp.toPx() + (yPercent * (size.height - (8.dp.toPx() * 2))))
+                }
+
+                val line = Path().apply {
                     context.points.forEachIndexed { index, point ->
-                        val xPercent = (point.x - context.xRange.start) / (context.xRange.endInclusive - context.xRange.start)
-                        val yPercent = (point.y - context.yRange.start) / (context.yRange.endInclusive - context.yRange.start)
-                        val x = 16.dp.toPx() + (xPercent * (size.width - (16.dp.toPx() * 2)))
-                        val y = size.height - (8.dp.toPx() + (yPercent * (size.height - (8.dp.toPx() * 2))))
+                        val x = getX(point)
+                        val y = getY(point)
                         if (index == 0) {
                             moveTo(x, y)
                         } else {
@@ -220,15 +244,40 @@ private fun LineGraphInner(
                     }
                 }
                 drawPath(
-                    path = path,
+                    path = line,
                     color = lineColor,
                     style = Stroke(
                         width = lineWidth.toPx(),
                     ),
                 )
-            }
-    ) {
 
+                val startPoint = context.points.first()
+                val endPoint = context.points.last()
+                val highestPoint = context.points.maxBy { it.y }
+
+                val gradientArea = line.apply {
+                    val startX = getX(startPoint)
+                    val startY = getY(startPoint)
+                    val endX = getX(endPoint)
+
+                    lineTo(endX, size.height)
+                    lineTo(startX, size.height)
+                    lineTo(startX, startY)
+                }
+                drawPath(
+                    path = gradientArea,
+                    brush = androidx.compose.ui.graphics.Brush.verticalGradient(
+                        colors = listOf(
+                            lineColor.copy(alpha = 0.8f),
+                            lineColor.copy(alpha = 0.5f),
+                            lineColor.copy(alpha = 0.01f),
+                        ),
+                        startY = getY(highestPoint),
+                        endY = size.height,
+                    ),
+                )
+            },
+    ) {
     }
 }
 
