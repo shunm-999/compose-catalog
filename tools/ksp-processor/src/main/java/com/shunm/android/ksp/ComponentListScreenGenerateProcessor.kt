@@ -41,6 +41,7 @@ internal class ComponentListScreenGenerateProcessor(
                 "androidx.compose.material3.Icon",
                 "androidx.compose.material3.IconButton",
                 "androidx.compose.material3.Scaffold",
+                "androidx.compose.material3.Surface",
                 "androidx.compose.material3.Text",
                 "androidx.compose.runtime.Composable",
                 "androidx.compose.ui.Modifier",
@@ -101,10 +102,13 @@ internal class ComponentListScreenGenerateProcessor(
                     "}".l()
                 }
                 ") { paddingValues ->".l {
-                    "when (catalogType) {".l {
-                        for (catalogType in catalogMap.entries().keys) {
-                            "CatalogType.$catalogType -> ${catalogType}Catalog()".l()
+                    "Surface(modifier = Modifier.padding(paddingValues)) {".l {
+                        "when (catalogType) {".l {
+                            for (catalogType in catalogMap.entries().keys) {
+                                "CatalogType.$catalogType -> ${catalogType}Catalog()".l()
+                            }
                         }
+                        "}".l()
                     }
                     "}".l()
                 }
@@ -167,6 +171,7 @@ internal class ComponentListScreenGenerateProcessor(
     ) {
         if (functionParams.isEmpty()) {
             "${catalog.simpleName.asString()}()".l()
+            return
         }
         val functionParam = functionParams[count]
         val ch = ('a'.code + count).toChar()

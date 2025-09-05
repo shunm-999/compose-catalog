@@ -33,9 +33,11 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.shunm.android.presentation.component.di.Catalogable
 import com.shunm.android.presentation.component.tab.ClTabRow
 import com.shunm.android.presentation.component.tab.TabItem
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import kotlin.math.PI
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.truncate
@@ -417,16 +419,44 @@ private enum class LineGraphTab {
     Monthly,
 }
 
-@Preview
+@Catalogable
 @Composable
-private fun LineGraphCatalogable() {
-    var selectedTab: LineGraphTab by remember {
-        mutableStateOf(LineGraphTab.Daily)
+fun LineGraphCatalogable() {
+    var selectedTab by remember { mutableStateOf(LineGraphTab.Daily) }
+
+    // ① タブごとのポイントを作る関数
+    fun generatePoints(tab: LineGraphTab): Pair<List<Float>, List<Float>> = when (tab) {
+        LineGraphTab.Daily -> {
+            // 0..23時のサイン波（見やすいようにスケール）
+            val x = (0..23).map { it.toFloat() }
+            val y = x.map { t -> (kotlin.math.sin(t / 24f * (2f * PI).toFloat()) * 40f + 60f) }
+            x to y
+        }
+        LineGraphTab.Weekly -> {
+            // 月〜日の7点（好きに差し替え可）
+            val x = (1..7).map { it.toFloat() }
+            val y = listOf(12f, 18f, 9f, 14f, 20f, 17f, 11f)
+            x to y
+        }
+        LineGraphTab.Monthly -> {
+            // 1..30日の緩やかなトレンド＋周期変動
+            val x = (1..30).map { it.toFloat() }
+            val y = x.map { t ->
+                val trend = 0.8f * t // 緩やかな上昇
+                val wave = 6f * kotlin.math.sin(t / 5f) // 軽い周期成分
+                trend + wave + 10f
+            }
+            x to y
+        }
     }
+
+    // ② タブ変更時だけポイントを再計算
+    val points = remember(selectedTab) { generatePoints(selectedTab) }
+
     Surface {
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             ClTabRow(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -435,27 +465,35 @@ private fun LineGraphCatalogable() {
                 tabs = {
                     items(LineGraphTab.entries) { item ->
                         TabItem(
-                            selected = isSelected,
-                            onClick = {
-                                selectedTab = item
-                            },
+                            selected = item == selectedTab, // ← 修正
+                            onClick = { selectedTab = item },
                             text = item.name,
                         )
                     }
                 },
             )
+
+            // ③ ポイントを使ってグラフ用コンテキストを生成
             val context = rememberLineGraphContext {
-                title = "Sample Line Graph"
-                xLabel = "X Axis"
-                yLabel = "Y Axis"
+                title = when (selectedTab) {
+                    LineGraphTab.Daily -> "Daily Line"
+                    LineGraphTab.Weekly -> "Weekly Line"
+                    LineGraphTab.Monthly -> "Monthly Line"
+                }
+                xLabel = when (selectedTab) {
+                    LineGraphTab.Daily -> "Hour"
+                    LineGraphTab.Weekly -> "Day of Week"
+                    LineGraphTab.Monthly -> "Day"
+                }
+                yLabel = "Value"
+
                 plot(
-                    x = listOf(0f, 1f, 2f, 3f, 4f, 5f, 6f, 7f, 8f, 9f, 10f),
-                    y = listOf(0f, 1f, 64f, 4f, 100f, 16f, 25f, 9f, 36f, 49f, 81f),
+                    x = points.first,
+                    y = points.second,
                 )
             }
-            LineGraph(
-                context = context,
-            )
+
+            LineGraph(context = context)
         }
     }
 }
