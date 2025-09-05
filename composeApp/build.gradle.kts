@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     id("com.shunm.android.compose_catalog.primitive.buildkonfig")
+    id("com.shunm.android.compose_catalog.primitive.hilt")
 }
 
 kotlin {

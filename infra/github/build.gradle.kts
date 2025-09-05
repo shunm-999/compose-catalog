@@ -1,7 +1,13 @@
 plugins {
     id("com.shunm.android.compose_catalog.convention.kmp-feature")
+    id("com.shunm.android.compose_catalog.primitive.hilt")
+    id("com.shunm.android.compose_catalog.primitive.network")
 }
 
-dependencies {
-    commonMainImplementation(projects.domain.component)
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation(libs.kotlinxSerializationJson)
+        }
+    }
 }
