@@ -24,6 +24,7 @@ dependencyResolutionManagement {
 
 include(":composeApp")
 include(":infra:github")
+include(":domain:shared")
 include(":domain:category")
 include(":domain:component")
 include(":domain:github")
