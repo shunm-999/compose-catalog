@@ -7,7 +7,11 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.domain.shared)
             implementation(libs.kotlinxSerializationJson)
+        }
+        androidMain.dependencies {
+            implementation(projects.domain.github)
         }
     }
 }
