@@ -9,6 +9,7 @@ class SafeApiCall @Inject constructor() {
     suspend operator fun <T> invoke(apiCall: suspend () -> T): ExceptionResult<T> = try {
         Ok(apiCall())
     } catch (e: Exception) {
+        println("⭐️ SafeApiCall Error: $e")
         Err(e)
     }
 }

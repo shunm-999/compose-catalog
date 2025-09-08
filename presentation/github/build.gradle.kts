@@ -11,4 +11,7 @@ dependencies {
     implementation(projects.presentation.shared)
     commonMainImplementation(projects.presentation.shared)
     commonMainImplementation(projects.presentation.component)
+
+    commonMainImplementation(libs.coil)
+    commonMainImplementation(libs.coilNetwork)
 }

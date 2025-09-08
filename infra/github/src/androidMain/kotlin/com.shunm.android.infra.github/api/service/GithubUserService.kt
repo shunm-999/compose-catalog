@@ -6,8 +6,8 @@ import kotlinx.serialization.Serializable
 import retrofit2.http.GET
 
 internal interface GithubUserService {
-    @GET("user")
-    suspend fun getUser(): List<GithubUserResponse>
+    @GET("users")
+    suspend fun getUsers(): List<GithubUserResponse>
 }
 
 @Serializable

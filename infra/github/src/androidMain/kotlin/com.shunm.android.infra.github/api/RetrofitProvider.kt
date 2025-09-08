@@ -60,12 +60,12 @@ internal class RetrofitProvider @Inject constructor() {
 
         return Retrofit.Builder()
             .baseUrl(baseUrl)
-            .client(client)
             .addConverterFactory(
                 json.asConverterFactory(
                     "application/json; charset=UTF8".toMediaType(),
                 ),
             )
+            .client(client)
             .build()
     }
 }

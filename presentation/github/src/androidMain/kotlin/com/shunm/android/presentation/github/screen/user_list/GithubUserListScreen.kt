@@ -6,8 +6,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import com.shunm.android.presentation.component.appbar.ClSmallAppbar
 import com.shunm.android.presentation.component.list.Headline
+import com.shunm.android.presentation.component.list.LeadingImage
 import com.shunm.android.presentation.component.list.ListItem
-import com.shunm.android.presentation.component.list.SupportingText
 import com.shunm.android.presentation.shared.component.ClScaffold
 
 @Composable
@@ -26,14 +26,18 @@ internal fun GithubUserListScreen(
     ) { uiState ->
         LazyColumn {
             items(uiState.users) { user ->
-                ListItem {
-                    twoLine(
+                ListItem(
+                    leading = {
+                        LeadingImage(
+                            url = user.avatarUrl,
+                            contentDescription = user.login,
+                        )
+                    }
+                ) {
+                    oneLine(
                         headline = {
                             Headline(user.login)
                         },
-                        supportingText = {
-                            SupportingText(user.name ?: "")
-                        }
                     )
                 }
             }

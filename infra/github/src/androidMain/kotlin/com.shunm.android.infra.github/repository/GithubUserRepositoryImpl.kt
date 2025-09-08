@@ -17,7 +17,7 @@ internal class GithubUserRepositoryImpl @Inject constructor(
         val service = retrofitProvider.provide(RetrofitProvider.ProviderType.GITHUB).create<GithubUserService>()
 
         return safeApiCall {
-            service.getUser().map { it.toDomain() }
+            service.getUsers().map { it.toDomain() }
         }
     }
 }
