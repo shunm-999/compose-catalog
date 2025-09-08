@@ -15,9 +15,11 @@ dependencies {
 
 compose {
     resources {
-        val namespace = getDefaultPackageName(project.name)
-        packageOfResClass = namespace
-        nameOfResClass = namespace.split(".").last().capitalized() + "Res"
-        generateResClass = always
+        if (project.path.contains("presentation")) {
+            val namespace = getDefaultPackageName(project.name)
+            packageOfResClass = namespace
+            nameOfResClass = namespace.split(".").last().capitalized() + "Res"
+            generateResClass = always
+        }
     }
 }

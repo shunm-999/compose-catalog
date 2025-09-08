@@ -4,25 +4,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import com.shunm.android.domain.github.model.GithubUserId
 import com.shunm.android.presentation.component.appbar.ClSmallAppbar
 import com.shunm.android.presentation.component.list.Headline
 import com.shunm.android.presentation.component.list.ListItem
 import com.shunm.android.presentation.component.list.SupportingText
 import com.shunm.android.presentation.shared.component.ClScaffold
-import com.shunm.android.presentation.shared.ui_state.uiStateHolderProvider
 
 @Composable
 internal fun GithubUserListScreen(
-    uiStateHolder: GithubUserListUiStateHolder = uiStateHolderProvider(),
-    onBack: () -> Unit,
-    onClickGithubUser: (GithubUserId) -> Unit
+    uiState: GithubUserListScreen.GithubUserListUiState,
 ) {
-    val uiState by uiStateHolder.GithubUserListScreenPresenter(
-        onBack = onBack,
-        onClickGithubUser = onClickGithubUser
-    )
     ClScaffold(
         uiState = uiState,
         topAppbar = {

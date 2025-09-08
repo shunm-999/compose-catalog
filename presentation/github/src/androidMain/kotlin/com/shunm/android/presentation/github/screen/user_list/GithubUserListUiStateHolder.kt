@@ -14,6 +14,7 @@ import com.shunm.android.domain.shared.Ok
 import com.shunm.android.presentation.shared.ui_state.UiState
 import com.shunm.android.presentation.shared.ui_state.UiStateAggregation
 import com.shunm.android.presentation.shared.ui_state.UiStateHolder
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
@@ -42,7 +43,7 @@ data object GithubUserListScreen {
     }
 }
 
-
+@HiltViewModel
 internal class GithubUserListUiStateHolder @Inject constructor(
     private val getGithubUserListUseCase: GetGithubUserListUseCase
 ) : ViewModel(), UiStateHolder {

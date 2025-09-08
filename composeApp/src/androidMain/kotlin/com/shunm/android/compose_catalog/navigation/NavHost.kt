@@ -16,7 +16,7 @@ import com.shunm.android.presentation.shared.navigation.rememberNavController
 @Composable
 actual fun NavHost() {
     NavHost(
-        startDestination = CatalogTypeListRoute,
+        startDestination = HomeRoute,
         onBack = { currentRoute ->
             popBackStack()
         },

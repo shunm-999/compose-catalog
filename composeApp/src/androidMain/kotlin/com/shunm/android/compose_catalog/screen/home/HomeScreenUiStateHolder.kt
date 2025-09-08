@@ -9,7 +9,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.shunm.android.presentation.shared.ui_state.UiState
 import com.shunm.android.presentation.shared.ui_state.UiStateAggregation
 import com.shunm.android.presentation.shared.ui_state.UiStateHolder
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import javax.inject.Inject
 
 data object HomeScreen {
 
@@ -35,7 +37,8 @@ data object HomeScreen {
     }
 }
 
-internal class HomeScreenUiStateHolder : ViewModel(), UiStateHolder {
+@HiltViewModel
+internal class HomeScreenUiStateHolder @Inject constructor() : ViewModel(), UiStateHolder {
 
     private val uiStateFlow = MutableStateFlow<HomeScreen.HomeScreenUiState>(
         HomeScreen.HomeScreenUiState.Success(eventSink = {})

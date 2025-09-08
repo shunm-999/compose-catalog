@@ -20,7 +20,7 @@ inline fun <reified L : UiState.Loading, reified S : UiState.Success, reified E 
     crossinline loading: @Composable (uiState: L) -> Unit = {
         Box(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             CircularProgressIndicator()
         }
@@ -28,7 +28,7 @@ inline fun <reified L : UiState.Loading, reified S : UiState.Success, reified E 
     crossinline error: @Composable (uiState: E) -> Unit = {
         Box(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             Text("Error occurred")
         }
@@ -38,10 +38,10 @@ inline fun <reified L : UiState.Loading, reified S : UiState.Success, reified E 
     Scaffold(
         topBar = {
             topAppbar()
-        }
+        },
     ) { paddingValues ->
         Surface(
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier.padding(paddingValues),
         ) {
             when (uiState) {
                 is L -> {
