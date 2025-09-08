@@ -38,8 +38,8 @@ jetbrainsKotlinJvm = "2.2.10"
 spotless = "7.2.1"
 ktlint = "1.7.1"
 
-composeHotReload = "1.0.0-beta05"
-coil = "3.2.0"
+composeHotReload = "1.0.0-beta06"
+coil = "3.3.0"
 buildkonfig = "0.17.1"
 
 ktor = "3.2.3"

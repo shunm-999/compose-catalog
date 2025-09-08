@@ -30,7 +30,7 @@ internal fun GithubUserListScreen(
                     leading = {
                         LeadingImage(
                             url = user.avatarUrl,
-                            contentDescription = user.login,
+                            contentDescription = null,
                         )
                     }
                 ) {

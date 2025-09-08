@@ -4,11 +4,19 @@ plugins {
     id("com.shunm.android.compose_catalog.primitive.hilt")
 }
 
+kotlin {
+    sourceSets {
+        androidMain.dependencies {
+            implementation(libs.ktorClientOkhttp)
+        }
+    }
+}
+
 dependencies {
     implementation(projects.domain.shared)
     implementation(projects.domain.component)
     implementation(projects.domain.github)
-    implementation(projects.presentation.shared)
+
     commonMainImplementation(projects.presentation.shared)
     commonMainImplementation(projects.presentation.component)
 
