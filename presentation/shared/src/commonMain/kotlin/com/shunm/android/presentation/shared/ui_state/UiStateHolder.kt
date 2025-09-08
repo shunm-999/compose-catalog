@@ -13,4 +13,4 @@ interface UiState {
 interface UiStateAggregation<L : UiState.Loading, S : UiState.Success, E : UiState.Error> : UiState
 
 @Composable
-expect fun <T : UiStateHolder> viewModelProvider(): T
+expect fun <T : UiStateHolder> uiStateHolderProvider(): T

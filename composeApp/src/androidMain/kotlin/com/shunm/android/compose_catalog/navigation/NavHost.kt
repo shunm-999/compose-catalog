@@ -8,6 +8,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.shunm.android.presentation.component.navigation.CatalogTypeListRoute
 import com.shunm.android.presentation.component.navigation.componentEntry
+import com.shunm.android.presentation.github.navigation.githubEntry
 import com.shunm.android.presentation.shared.navigation.NavController
 import com.shunm.android.presentation.shared.navigation.NavRoute
 import com.shunm.android.presentation.shared.navigation.rememberNavController
@@ -21,7 +22,9 @@ actual fun NavHost() {
         },
         entryProvider = {
             entryProvider {
+                homeEntry(this@NavHost)
                 componentEntry(this@NavHost)
+                githubEntry(this@NavHost)
             }
         }
     )

@@ -10,7 +10,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object GithubUserListRoute : NavRoute
 
-fun <T : Any> EntryProviderBuilder<T>.githubEntry(navController: NavController) {
+fun <T : Any> EntryProviderBuilder<T>.githubEntry(
+    navController: NavController
+) {
     entry<GithubUserListRoute> {
         GithubUserListScreen(
             onBack = { navController.popBackStack() },

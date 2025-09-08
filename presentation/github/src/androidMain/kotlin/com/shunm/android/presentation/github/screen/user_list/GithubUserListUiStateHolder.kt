@@ -19,26 +19,26 @@ import javax.inject.Inject
 
 data object GithubUserListScreen {
     sealed interface GithubUserListUiState : UiStateAggregation<GithubUserListUiState.Loading, GithubUserListUiState.Success, GithubUserListUiState.Error> {
-        val eventSink: (GithubUserListEvent) -> Unit
+        val eventSink: (GithubUserListScreenEvent) -> Unit
 
         data class Loading(
-            override val eventSink: (GithubUserListEvent) -> Unit
+            override val eventSink: (GithubUserListScreenEvent) -> Unit
         ) : GithubUserListUiState, UiState.Loading
 
         data class Success(
             val users: List<GithubUser>,
-            override val eventSink: (GithubUserListEvent) -> Unit
+            override val eventSink: (GithubUserListScreenEvent) -> Unit
         ) : GithubUserListUiState, UiState.Success
 
         data class Error(
             val message: String,
-            override val eventSink: (GithubUserListEvent) -> Unit
+            override val eventSink: (GithubUserListScreenEvent) -> Unit
         ) : GithubUserListUiState, UiState.Error
     }
 
-    sealed interface GithubUserListEvent {
-        data object OnBack : GithubUserListEvent
-        data class ClickGithubUser(val userId: GithubUserId) : GithubUserListEvent
+    sealed interface GithubUserListScreenEvent {
+        data object OnBack : GithubUserListScreenEvent
+        data class ClickGithubUser(val userId: GithubUserId) : GithubUserListScreenEvent
     }
 }
 
@@ -56,13 +56,13 @@ internal class GithubUserListUiStateHolder @Inject constructor(
         onClickGithubUser: (GithubUserId) -> Unit
     ): State<GithubUserListScreen.GithubUserListUiState> {
         val eventSink = remember {
-            { event: GithubUserListScreen.GithubUserListEvent ->
+            { event: GithubUserListScreen.GithubUserListScreenEvent ->
                 when (event) {
-                    is GithubUserListScreen.GithubUserListEvent.OnBack -> {
+                    is GithubUserListScreen.GithubUserListScreenEvent.OnBack -> {
                         onBack()
                     }
 
-                    is GithubUserListScreen.GithubUserListEvent.ClickGithubUser -> {
+                    is GithubUserListScreen.GithubUserListScreenEvent.ClickGithubUser -> {
                         onClickGithubUser(event.userId)
                     }
                 }
