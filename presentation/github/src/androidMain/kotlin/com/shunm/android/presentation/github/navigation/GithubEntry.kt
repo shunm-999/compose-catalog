@@ -14,6 +14,7 @@ fun <T : Any> EntryProviderBuilder<T>.githubEntry(navController: NavController) 
     entry<GithubUserListRoute> {
         GithubUserListScreen(
             onBack = { navController.popBackStack() },
+            onClickGithubUser = { /* TODO: Implement user detail navigation */ },
         )
     }
 }

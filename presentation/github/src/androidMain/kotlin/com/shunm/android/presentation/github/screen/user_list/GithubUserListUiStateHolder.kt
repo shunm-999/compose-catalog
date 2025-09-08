@@ -11,27 +11,29 @@ import com.shunm.android.domain.github.model.GithubUserId
 import com.shunm.android.domain.github.usecase.GetGithubUserListUseCase
 import com.shunm.android.domain.shared.Err
 import com.shunm.android.domain.shared.Ok
+import com.shunm.android.presentation.shared.ui_state.UiState
+import com.shunm.android.presentation.shared.ui_state.UiStateAggregation
 import com.shunm.android.presentation.shared.ui_state.UiStateHolder
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
 data object GithubUserListScreen {
-    sealed interface GithubUserListUiState {
+    sealed interface GithubUserListUiState : UiStateAggregation<GithubUserListUiState.Loading, GithubUserListUiState.Success, GithubUserListUiState.Error> {
         val eventSink: (GithubUserListEvent) -> Unit
 
         data class Loading(
             override val eventSink: (GithubUserListEvent) -> Unit
-        ) : GithubUserListUiState
+        ) : GithubUserListUiState, UiState.Loading
 
         data class Success(
             val users: List<GithubUser>,
             override val eventSink: (GithubUserListEvent) -> Unit
-        ) : GithubUserListUiState
+        ) : GithubUserListUiState, UiState.Success
 
         data class Error(
             val message: String,
             override val eventSink: (GithubUserListEvent) -> Unit
-        ) : GithubUserListUiState
+        ) : GithubUserListUiState, UiState.Error
     }
 
     sealed interface GithubUserListEvent {
