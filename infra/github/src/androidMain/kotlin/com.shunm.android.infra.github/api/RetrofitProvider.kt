@@ -15,7 +15,7 @@ import javax.inject.Singleton
 internal class RetrofitProvider @Inject constructor() {
 
     enum class ProviderType {
-        GITHUB
+        GITHUB,
     }
 
     private val lock = Any()
