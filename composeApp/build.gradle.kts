@@ -7,13 +7,14 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     id("com.shunm.android.compose_catalog.primitive.buildkonfig")
+    id("com.shunm.android.compose_catalog.primitive.hilt")
 }
 
 kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
 
@@ -39,6 +40,8 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel.navigation3)
             implementation(libs.androidx.material3.adaptive.navigation3)
             implementation(libs.kotlinx.serialization.core)
+
+            implementation(projects.infra.github)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -47,8 +50,8 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
+//            implementation(libs.androidx.lifecycle.common.viewmodelCompose)
+//            implementation(libs.androidx.lifecycle.common.runtimeCompose)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -78,14 +81,15 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
 dependencies {
     implementation(projects.presentation.shared)
     implementation(projects.presentation.component)
+    implementation(projects.presentation.github)
 
     debugImplementation(compose.uiTooling)
 }

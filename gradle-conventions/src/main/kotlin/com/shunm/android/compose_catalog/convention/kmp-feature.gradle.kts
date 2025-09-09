@@ -42,8 +42,8 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
 
-            implementation(libs.library("androidx-lifecycle-viewmodelCompose"))
-            implementation(libs.library("androidx-lifecycle-runtimeCompose"))
+            implementation(libs.library("androidx-lifecycle-common-viewmodelCompose"))
+            implementation(libs.library("androidx-lifecycle-common-runtimeCompose"))
             implementation(libs.library("kotlinxCollectionsImmutable"))
         }
 

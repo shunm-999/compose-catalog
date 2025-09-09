@@ -23,8 +23,12 @@ dependencyResolutionManagement {
 }
 
 include(":composeApp")
+include(":infra:github")
+include(":domain:shared")
 include(":domain:category")
 include(":domain:component")
+include(":domain:github")
 include(":presentation:shared")
 include(":presentation:component")
+include(":presentation:github")
 include(":tools:ksp-processor")

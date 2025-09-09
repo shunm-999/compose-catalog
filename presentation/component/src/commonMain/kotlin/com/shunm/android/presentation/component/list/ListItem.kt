@@ -28,8 +28,8 @@ fun ListItem(
     enabled: Boolean = true,
     hasDivider: Boolean = false,
     leading: @Composable (ListItemLeadingScope.() -> Unit)? = null,
-    content: ListItemContentScopeProvider.() -> ListItemContentScope,
     trailing: @Composable (ListItemTrailingScope.() -> Unit)? = null,
+    content: ListItemContentScopeProvider.() -> ListItemContentScope,
 ) {
     val rememberContentProvider by rememberUpdatedState(content)
     val contentScope = ListItemContentScopeProvider.rememberContentProvider()
