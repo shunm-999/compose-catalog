@@ -257,44 +257,78 @@ private fun LineGraphInner(
                     return size.height - (8.dp.toPx() + (yPercent * (size.height - (8.dp.toPx() * 2))))
                 }
 
+                val mapped: List<Offset> = context.points.map { p -> Offset(getX(p), getY(p)) }
+
+                // Helper to get a safe point at index (clamped at both ends)
+                fun pt(i: Int): Offset = when {
+                    i < 0 -> mapped.first()
+                    i >= mapped.size -> mapped.last()
+                    else -> mapped[i]
+                }
+
                 val line = Path().apply {
-                    context.points.forEachIndexed { index, point ->
-                        val x = getX(point)
-                        val y = getY(point)
-                        if (index == 0) {
-                            moveTo(x, y)
-                        } else {
-                            lineTo(x, y)
+                    when (mapped.size) {
+                        0 -> { /* nothing */ }
+                        1 -> moveTo(mapped[0].x, mapped[0].y)
+                        2 -> {
+                            moveTo(mapped[0].x, mapped[0].y)
+                            lineTo(mapped[1].x, mapped[1].y)
+                        }
+                        else -> {
+                            moveTo(mapped[0].x, mapped[0].y)
+                            // Tension factor for Catmull-Rom; 0.5 is common for a smooth curve
+                            val t = 0.5f
+                            for (i in 0 until mapped.lastIndex) {
+                                val p0 = pt(i - 1)
+                                val p1 = pt(i)
+                                val p2 = pt(i + 1)
+                                val p3 = pt(i + 2)
+
+                                val c1 = Offset(
+                                    x = p1.x + (p2.x - p0.x) * t / 3f,
+                                    y = p1.y + (p2.y - p0.y) * t / 3f,
+                                )
+                                val c2 = Offset(
+                                    x = p2.x - (p3.x - p1.x) * t / 3f,
+                                    y = p2.y - (p3.y - p1.y) * t / 3f,
+                                )
+                                cubicTo(
+                                    c1.x,
+                                    c1.y,
+                                    c2.x,
+                                    c2.y,
+                                    p2.x,
+                                    p2.y,
+                                )
+                            }
                         }
                     }
                 }
+
+// Stroke the curve
                 drawPath(
                     path = line,
                     color = lineColor,
-                    style = Stroke(
-                        width = lineWidth.toPx(),
-                    ),
+                    style = Stroke(width = lineWidth.toPx()),
                 )
 
+// Area fill under the curve (same visual as before)
                 val startPoint = context.points.firstOrNull()
                 val endPoint = context.points.lastOrNull()
                 val highestPoint = context.points.maxByOrNull { it.y }
-
                 if (startPoint == null || endPoint == null || highestPoint == null) {
                     return@drawBehind
                 }
 
-                val gradientArea = line.apply {
+                val areaPath = line.apply {
                     val startX = getX(startPoint)
-                    val startY = getY(startPoint)
                     val endX = getX(endPoint)
-
                     lineTo(endX, size.height)
                     lineTo(startX, size.height)
-                    lineTo(startX, startY)
+                    close()
                 }
                 drawPath(
-                    path = gradientArea,
+                    path = areaPath,
                     brush = androidx.compose.ui.graphics.Brush.verticalGradient(
                         colors = listOf(
                             lineColor.copy(alpha = 0.8f),
@@ -515,7 +549,7 @@ fun LineGraphCatalogable() {
                 val t = i / (size - 1f)
                 LineGraphPoint(
                     x = i.toFloat(),
-                    y = (kotlin.math.sin(t * (2f * PI).toFloat()) * 40f + 60f),
+                    y = (kotlin.math.sin(2 * t * (2f * PI).toFloat()) * 40f + 60f),
                 )
             }
         }
